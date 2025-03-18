@@ -2,12 +2,8 @@
 
 import * as React from "react"
 import {
-  AudioWaveform,
-  Bot,
-  Command,
-  GalleryVerticalEnd,
-  Scroll,
-  Users,
+  Wheat,
+  Hammer,
 } from "lucide-react"
 
 import { SidebarPages } from "./sidebar-pages"
@@ -33,26 +29,26 @@ const data = {
   enterprises: [
     {
       name: "Acme Inc",
-      logo: GalleryVerticalEnd,
+      logo: Wheat,
       plan: "Enterprise",
     },
     {
       name: "Acme Corp.",
-      logo: AudioWaveform,
+      logo: Wheat,
       plan: "Startup",
     },
     {
       name: "Evil Corp.",
-      logo: Command,
+      logo: Wheat,
       plan: "Free",
     },
   ],
 
   pages: [
     {
-      title: "Contratos",
+      title: "Section 1",
       url: "/contracts",
-      icon: Scroll,
+      icon: Hammer,
       isActive: false,
       items: [
         {
@@ -67,9 +63,9 @@ const data = {
     },
 
     {
-      title: "Robôs",
+      title: "Section 2",
       url: "#",
-      icon: Bot,
+      icon: Hammer,
       items: [
         {
           title: "Tabela de Robôs",
@@ -78,9 +74,9 @@ const data = {
       ],
     },
     {
-      title: "Usuários",
+      title: "Section 3",
       url: "#",
-      icon: Users,
+      icon: Hammer,
       items: [
         {
           title: "Tabela de Usuários",
@@ -98,7 +94,7 @@ const data = {
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
 
-    <Sidebar collapsible="icon" {...props}>
+    <Sidebar className="bg-[#ece3d4]" collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarEnterprise enterprises={data.enterprises} />
       </SidebarHeader>

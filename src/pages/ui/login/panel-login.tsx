@@ -1,72 +1,43 @@
-import { Button } from "@/components/ui/button"
-
-import Logo from "../../../assets/logo-seja-vitta.png"
-
-import {
-    ResizableHandle,
-    ResizablePanel,
-    ResizablePanelGroup,
-  } from "@/components/ui/resizable"
-  
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Link } from "react-router-dom"
-import { toast } from "sonner"
-import { ButtonForgotPassword } from "./button-forgot-password"
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Link } from "react-router-dom";
 
 export function PanelLogin() {
     return (
-        <ResizablePanelGroup
-      direction="horizontal"
-      className="max-w-md rounded border h-[600px] dark:border-gray-400 md:min-w-[1000px] md:min-h-[450px] bg-white"
-    >
-      <ResizablePanel defaultSize={50} className="bg-[#2570b2]">
-        <div className="flex h-full items-center justify-center p-6 ">
-          <img src={Logo} alt="" />
-        </div>
-      </ResizablePanel>
-      <ResizableHandle />
-      <ResizablePanel defaultSize={50}>
-        <ResizablePanelGroup direction="vertical">
-          <ResizableHandle />
-          <ResizablePanel defaultSize={75}>
-            <div className=" h-[200px] flex flex-col items-center justify-center p-6 pt-20 text-gray-700">
-                <h1 className="text-4xl font-medium block pt-[155px] text-[#2570b2]">Login</h1>
-                    <h2 className="block pt-7">Entre com a sua conta</h2>
+      <>
+          <div className="bg-[#E6D5BC] w-[540px] h-[610px] rounded-md shadow-lg dark:bg-zinc-950">
+              <header className="text-center p-11">
+                <h1 className="font-bold text-3xl">NutriAqui</h1>
+                <h2 className="mt-4 text-gray-600">Descrição da NutriAqui, pode ser algum tipo de slogan ou frase</h2>
 
-                <span className="p-3">
-                    <Label>Usuário</Label>
+                <h3 className="font-semibold mt-4">Informe seu e-mail e senha para concluir o login</h3>
+              </header>
 
-                    <div className="flex items-center space-x-3">
-                      <Input className="w-[300px]"/>
+              <section className="items-center justify-center flex flex-col mt-4">
+                  <form action="">
+                    <div className="">
+                      <Input className="border bg-[#e2cba8] dark:bg-zinc-900 w-[350px]" placeholder="E-mail" />
                     </div>
-                </span>
 
-                <span className="p-3">
-                    <Label>Senha</Label>
-
-                    <div className="flex items-center space-x-3">
-                      <Input className="w-[300px]" type="password"/>
+                    <div className="">
+                      <Input className="border bg-[#e2cba8] dark:bg-zinc-900 w-[350px] mt-6" placeholder="Senha" />
                     </div>
-                </span>
 
-                <footer className="pt-6">
+                  <Link to="/">
+                    <Button className="w-[350px] mt-6">Login</Button>
+                  </Link>
 
-                    <Link to="/"><Button className="mr-6 bg-[#2570b2] text-white hover:bg-blue-900" onClick={() => toast.success('Login feito com sucesso!', {
-                      style: {
-                        backgroundColor: "#fffff",
-                        color: "#a2e6a5",
-                        border: '2px solid #3552360',
-                      }
-                    })}>Entrar</Button> </Link>
+                  </form>
 
-                    <ButtonForgotPassword />
-                </footer>
-            </div>
+                  <Link to="/">
+                      <Button className="mt-4 text-black dark:text-white" variant="link">Não tem uma conta? Cadastre-se aqui.</Button>
+                  </Link>
+              </section>
 
-         </ResizablePanel>
-        </ResizablePanelGroup>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+              <footer className="mt-[150px]">
+                <p className="text-center text-gray-500 font-semibold text-sm mt-6">© 2025 NutriAqui. Todos os direitos reservados.</p>
+              </footer>
+          </div>
+      </>
     )
 }
