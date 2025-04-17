@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import {
-  Wheat,
+  Citrus,
   Hammer,
 } from "lucide-react"
 
@@ -17,11 +17,12 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
+import { SidebarAdmin } from "./sidebar-admin"
 
 const data = {
 
   user: {
-    name: "shadcn",
+    name: "Desenvolvedor",
     email: "m@example.com",
     avatar: "/avatars/shadcn.jpg",
   },
@@ -29,17 +30,17 @@ const data = {
   enterprises: [
     {
       name: "Acme Inc",
-      logo: Wheat,
+      logo: Citrus,
       plan: "Enterprise",
     },
     {
       name: "Acme Corp.",
-      logo: Wheat,
+      logo: Citrus,
       plan: "Startup",
     },
     {
       name: "Evil Corp.",
-      logo: Wheat,
+      logo: Citrus,
       plan: "Free",
     },
   ],
@@ -47,17 +48,17 @@ const data = {
   pages: [
     {
       title: "Section 1",
-      url: "/contracts",
+      url: "#",
       icon: Hammer,
       isActive: false,
       items: [
         {
-          title: "Tabela de Contratos",
-          url: "/contracts?page=2",
+          title: "Item 1",
+          url: "#",
         },
         {
-          title: "Criar Contrato",
-          url: "/contracts/new",
+          title: "Item 2",
+          url: "#",
         },
       ],
     },
@@ -68,8 +69,12 @@ const data = {
       icon: Hammer,
       items: [
         {
-          title: "Tabela de Robôs",
-          url: "/robots",
+          title: "Item 1",
+          url: "#",
+        },
+        {
+          title: "Item 2",
+          url: "#",
         },
       ],
     },
@@ -79,12 +84,12 @@ const data = {
       icon: Hammer,
       items: [
         {
-          title: "Tabela de Usuários",
-          url: "/users",
+          title: "Item 1",
+          url: "#",
         },
         {
-          title: "Criar Usuário",
-          url: "/users/new",
+          title: "Item 2",
+          url: "#",
         },
       ],
     },
@@ -92,6 +97,7 @@ const data = {
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+  
   return (
 
     <Sidebar className="bg-[#ece3d4]" collapsible="icon" {...props}>
@@ -101,6 +107,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <SidebarPages pages={data.pages} />
         <SidebarConfig/>
+        <SidebarAdmin />
       </SidebarContent>
       <SidebarFooter>
         <SidebarUser user={data.user} />

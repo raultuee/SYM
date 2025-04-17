@@ -96,7 +96,7 @@ export function SidebarConfig() {
         <SidebarMenuItem>
           <SidebarMenuButton className="text-sidebar-foreground/70">
             <MoreHorizontal className="text-sidebar-foreground/70" />
-            <span>More</span>
+            <span>Painel Dev</span>
           </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenu>
