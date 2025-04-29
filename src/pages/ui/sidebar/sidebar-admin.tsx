@@ -2,7 +2,10 @@
 
 import {
   Ham,
-  HandHelping
+  HandHelping,
+  Hospital,
+  TableProperties,
+  Users
 } from "lucide-react"
 
 import {
@@ -13,6 +16,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import { Link } from "react-router-dom"
+import { FaTasks } from "react-icons/fa"
 
 
 export function SidebarAdmin() {
@@ -55,7 +59,7 @@ export function SidebarAdmin() {
                     <SidebarMenuButton className="cursor-pointer" asChild>
 
                             <section>
-                              <HandHelping />
+                              <Hospital />
                               <span>Consultórios</span>
                             </section>
 
@@ -68,7 +72,7 @@ export function SidebarAdmin() {
                     <SidebarMenuButton className="cursor-pointer" asChild>
 
                             <section>
-                              <HandHelping />
+                              <Users />
                               <span>Pacientes</span>
                             </section>
 
@@ -81,7 +85,7 @@ export function SidebarAdmin() {
                     <SidebarMenuButton className="cursor-pointer" asChild>
 
                             <section>
-                              <HandHelping />
+                              <FaTasks />
                               <span>Objetivos</span>
                             </section>
 
@@ -89,13 +93,13 @@ export function SidebarAdmin() {
           </SidebarMenuItem>
           </Link>
 
-          <Link to="/nutricionistas">
-          <SidebarMenuItem key="nutricionistas">
+          <Link to="/propriedades">
+          <SidebarMenuItem key="propriedades">
                     <SidebarMenuButton className="cursor-pointer" asChild>
 
                             <section>
-                              <HandHelping />
-                              <span>Nutricionistas</span>
+                              <TableProperties />
+                              <span>Propriedades</span>
                             </section>
 
                     </SidebarMenuButton>

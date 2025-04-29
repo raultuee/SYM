@@ -44,6 +44,8 @@ export function Dashboard() {
             <div className="mt-7 gap-4 items-center justify-center">
           
               <SubHeaderDashboard />
+              
+
               <span className=" p-10 inline-flex gap-6">
                 <BarChartMixedUI />
                 <BarChartMultipleUI/>

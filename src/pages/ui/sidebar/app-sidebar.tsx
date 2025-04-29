@@ -18,6 +18,7 @@ import {
   SidebarRail,
 } from "@/components/ui/sidebar"
 import { SidebarAdmin } from "./sidebar-admin"
+import { CommandDialogDemo } from "./command"
 
 const data = {
 
@@ -110,6 +111,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         <SidebarAdmin />
       </SidebarContent>
       <SidebarFooter>
+        <CommandDialogDemo />
         <SidebarUser user={data.user} />
       </SidebarFooter>
       <SidebarRail />

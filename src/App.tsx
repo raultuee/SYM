@@ -6,14 +6,8 @@ import { Dashboard } from './pages/dashboard';
 
 import { Toaster } from 'sonner';
 import { Error } from './pages/error';
-import { Alimentos } from './pages/alimentos';
-import { Nutricionistas } from './pages/nutricionistas';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from './components/ui/sidebar';
 import { AppSidebar } from './pages/ui/sidebar/app-sidebar';
-import { Consultorios } from './pages/consultorios';
-import { Pacientes } from './pages/pacientes';
-import { Objetivos } from './pages/objetivos';
-import { Propriedades } from './pages/propriedades';
 
 export function App() {
 
@@ -21,7 +15,7 @@ export function App() {
 
     <>
 
-  <ThemeProvider storageKey='nutri-aqui-theme' defaultTheme='light'>
+  <ThemeProvider storageKey='save-your-money' defaultTheme='dark'>
       <Toaster />
     <Router>
       
@@ -41,18 +35,6 @@ export function App() {
         <Route path='/login' element={<Login/>}/>
 
         <Route path='*' element={<Error />} />
-
-        <Route path='/alimentos' element={<Alimentos />} />
-
-        <Route path='/nutricionistas' element={<Nutricionistas />} />
-
-        <Route path='/consultorios' element={<Consultorios />} />
-
-        <Route path='/pacientes' element={<Pacientes />} />
-
-        <Route path='/objetivos' element={<Objetivos />} />
-
-        <Route path='/propriedades' element={<Propriedades />} />
 
       </Routes>
 

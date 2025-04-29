@@ -53,7 +53,7 @@ const chartConfig = {
 
 export function BarChartMixedUI() {
   return (
-    <Card>
+    <Card className="w-[]">
       <CardHeader>
         <CardTitle>Bar Chart - Mixed</CardTitle>
         <CardDescription>January - June 2024</CardDescription>

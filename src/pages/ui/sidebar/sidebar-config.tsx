@@ -2,7 +2,7 @@
 
 import {
   Bell,
-  MoreHorizontal,
+  HelpCircle,
   SunMoon,
 } from "lucide-react"
 
@@ -68,7 +68,7 @@ export function SidebarConfig() {
           <SidebarMenuItem key="choose-notification">
               <DropdownMenu>
                  <DropdownMenuTrigger asChild>
-                    <SidebarMenuButton className="cursor-pointer" asChild>
+                    <SidebarMenuButton className="cursor-pointer w-full" asChild>
 
                         <section>
                           <Bell />
@@ -93,12 +93,30 @@ export function SidebarConfig() {
           </SidebarMenuItem>
 
 
-        <SidebarMenuItem>
-          <SidebarMenuButton className="text-sidebar-foreground/70">
-            <MoreHorizontal className="text-sidebar-foreground/70" />
-            <span>Painel Dev</span>
-          </SidebarMenuButton>
-        </SidebarMenuItem>
+          <SidebarMenuItem key="help">
+              <DropdownMenu>
+                 <DropdownMenuTrigger asChild>
+                    <SidebarMenuButton className="cursor-pointer w-full" asChild>
+
+                        <section>
+                          <HelpCircle />
+                          <span>Ajuda</span>
+                        </section>
+
+                    </SidebarMenuButton>
+                </DropdownMenuTrigger>
+              <DropdownMenuContent
+                className="w-48 rounded-lg"
+                side={isMobile ? "bottom" : "right"}
+                align={isMobile ? "end" : "start"}
+              >
+                  <DropdownMenuItem>
+                    Use Ctrl + J para navegar
+                  </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
+          </SidebarMenuItem>
+
       </SidebarMenu>
     </SidebarGroup>
   )
