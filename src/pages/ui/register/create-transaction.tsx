@@ -30,8 +30,10 @@ export function DialogForm({ onAddTransaction }: { onAddTransaction: (t: { name:
       amount: z.number().min(0, {
         message: "O valor deve ser maior que 0.",
       }),
-      type: z.boolean()
-    })
+      type: z.boolean(), // Entrada/Saída
+      method: z.enum(["debit", "credit", "pix", "money"]), // Método de pagamento
+      link: z.string().optional(),
+      })
 
     function generateId() {
       return Math.random().toString(36).substring(2, 8);
@@ -97,6 +99,34 @@ export function DialogForm({ onAddTransaction }: { onAddTransaction: (t: { name:
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="method"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Método</FormLabel>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Selecione" />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        <SelectItem value="debit">Débito</SelectItem>
+                        <SelectItem value="credit">Crédito</SelectItem>
+                        <SelectItem value="pix">Pix</SelectItem>
+                        <SelectItem value="money">Dinheiro</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormField
                 control={form.control}
                 name="type"
@@ -124,18 +154,26 @@ export function DialogForm({ onAddTransaction }: { onAddTransaction: (t: { name:
 
               {/* Input extra só aparece se for Saída */}
               {typeValue === false && (
-                <FormItem>
-                  <FormLabel>Link da Compra (Opcional)</FormLabel>
-                  <FormControl>
-                    <Input />
-                  </FormControl>
-                </FormItem>
+                <FormField
+                  control={form.control}
+                  name="link"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Link da Compra (Opcional)</FormLabel>
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               )}
 
               <DialogClose>
                 <Button
+                  className="ml-auto"
                   type="submit">
-                  Enviar
+                  Criar transação
                 </Button>
               </DialogClose>
             </form>

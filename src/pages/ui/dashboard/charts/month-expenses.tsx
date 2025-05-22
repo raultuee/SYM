@@ -1,12 +1,22 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingDown } from "lucide-react";
+import { getTransactions } from "@/db/transactions-local";
+import React from "react";
 
 export function MonthCanceledOrdersAmountCard() {
-    // Dados fictícios
-    const MonthCanceledOrdersAmount = {
-        amount: 305,
-        diffFromLastMonth: -5,
-    };
+    // Soma todas as transações de saída (type === false)
+    const [amount, setAmount] = React.useState(0);
+
+    React.useEffect(() => {
+        const transactions = getTransactions();
+        const sum = transactions
+            .filter(t => t.type === false)
+            .reduce((acc, t) => acc + (t.amount || 0), 0);
+        setAmount(sum * -1); // Multiplica o valor final por -1
+    }, []);
+
+    // Valor fictício para diffFromLastMonth, ajuste conforme necessário
+    const diffFromLastMonth = -5;
 
     return (
         <Card>
@@ -17,20 +27,20 @@ export function MonthCanceledOrdersAmountCard() {
          <CardContent className="space-y-1">
             <>
                 <span className="text-3xl font-bold tracking-tight">
-                    {MonthCanceledOrdersAmount.amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+                    {amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                 </span>
                 <p className="text-xs text-muted-foreground">
-                    {MonthCanceledOrdersAmount.diffFromLastMonth < 0 ? (
+                    {diffFromLastMonth < 0 ? (
                         <>
                         <span className="text-emerald-500 dark:text-emerald-400">
-                            {MonthCanceledOrdersAmount.diffFromLastMonth}%
+                            {diffFromLastMonth}%
                         </span>{' '}
                         em relação ao mês passado
                         </>
                     ) : (
                         <>
                         <span className="text-rose-500 dark:text-rose-400">
-                            +{MonthCanceledOrdersAmount.diffFromLastMonth}%
+                            +{diffFromLastMonth}%
                         </span>{' '} 
                         em relação ao mês passado
                         </>

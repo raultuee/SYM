@@ -1,30 +1,54 @@
+import React from "react";
 import { MonthRevenueCard } from "./charts/month-revenue";
 import { MonthOrdersAmountCard } from "./charts/month-earnings";
 import { DayOrdersAmountCard } from "./charts/amount-day";
 import { MonthCanceledOrdersAmountCard } from "./charts/month-expenses";
 import { RevenueChart } from "./charts/revenue-chart";
-import { PopularProductsChart } from "./charts/popular-products-chart";
+import { PopularProductsChart } from "./charts/method-popular";
 import { Separator } from "@/components/ui/separator";
 
 export function Dashboard() {
+  const [loading, setLoading] = React.useState(true);
 
-  return (
+  React.useEffect(() => {
+    const timer = setTimeout(() => setLoading(false), 1500); // 1.5s de delay global
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) {
+    // Aqui você pode retornar skeletons ou um spinner global
+    return (
       <div className="flex flex-col min-h-screen w-full gap-6 p-14 dark:bg-black">
-        <h1 className="text-4xl font-bold tracking-tight self-start">Dashboard</h1>
-        {/* self-start faz o h1 alinhar à esquerda */}
+        {/* Exemplo de skeleton simples */}
+        <div className="animate-pulse h-10 w-1/3 bg-muted rounded mb-6" />
         <div className="grid grid-cols-4 gap-7">
-            <MonthRevenueCard />
-            <MonthOrdersAmountCard />
-            <MonthCanceledOrdersAmountCard />
-            <DayOrdersAmountCard />
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="h-32 bg-muted rounded" />
+          ))}
         </div>
-
-        <Separator/>
-
-        <div className="flex gap-4">
-            <RevenueChart />
-            <PopularProductsChart />
+        <div className="flex gap-4 mt-4">
+          <div className="h-[250px] w-full bg-muted rounded" />
+          <div className="h-[250px] w-[374px] bg-muted rounded" />
         </div>
+      </div>
+    );
+  }
+
+  // Quando loading for false, renderize os cards reais normalmente
+  return (
+    <div className="flex flex-col min-h-screen w-full gap-6 p-14 dark:bg-black">
+      <h1 className="text-4xl font-bold tracking-tight self-start">Dashboard</h1>
+      <div className="grid grid-cols-4 gap-7">
+        <MonthRevenueCard />
+        <MonthOrdersAmountCard />
+        <MonthCanceledOrdersAmountCard />
+        <DayOrdersAmountCard />
+      </div>
+      <Separator />
+      <div className="flex gap-4 mt-4">
+        <RevenueChart />
+        <PopularProductsChart />
+      </div>
     </div>
   );
 }

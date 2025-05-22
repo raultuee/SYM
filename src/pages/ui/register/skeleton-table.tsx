@@ -35,6 +35,7 @@ import { Button } from "@/components/ui/button"
 import { toast } from "sonner";
 import { Skeleton } from "@/components/ui/skeleton";
 import { DialogForm } from "./create-transaction"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 // ARRAYS/OBJECTS OU REQUISIÇÕES
  
@@ -136,22 +137,28 @@ export function TableSkeleton({
     <div className="w-full">
       <div className="flex items-center py-4 gap-3">
         <Input
-        placeholder="Filtrar por ID..."
-        value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
-        onChange={(event) =>
-          table.getColumn("id")?.setFilterValue(event.target.value)
-        }
-        className="w-[120px] bg-white dark:bg-zinc-950"
-      />
+          placeholder="Filtrar transações..."
+          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
+          onChange={(event) =>
+            table.getColumn("name")?.setFilterValue(event.target.value)
+          }
+          className="max-w-sm bg-white dark:bg-zinc-950"
+        />
 
-      <Input
-        placeholder="Filtrar transações..."
-        value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-        onChange={(event) =>
-          table.getColumn("name")?.setFilterValue(event.target.value)
-        }
-        className="max-w-sm bg-white dark:bg-zinc-950"
-      />
+        <Select>
+          <SelectTrigger className="w-[180px] bg-white dark:bg-zinc-950">
+            <SelectValue placeholder="Filtrar método..." className="text-gray-600" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Métodos</SelectLabel>
+              <SelectItem value="debit">Débito</SelectItem>
+              <SelectItem value="credit">Crédito</SelectItem>
+              <SelectItem value="pix">PIX</SelectItem>
+              <SelectItem value="money">Dinheiro</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
 
       <Button 
       variant="default"
@@ -196,7 +203,7 @@ export function TableSkeleton({
         </DropdownMenu>
       </div>
       <div className="rounded-md border">
-        <Table className="w-[1200px] bg-white dark:bg-zinc-950 rounded-md p-3">
+        <Table className="w-[1300px] bg-white dark:bg-zinc-950 rounded-md p-3">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

@@ -50,15 +50,17 @@ import {
 import { Button } from "@/components/ui/button"
 import { Trash } from "lucide-react"
 import { toast } from "sonner"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 
 export type Payment = {
   id: string
   amount: number
   type: boolean
   name: string
-  // createdAt?: Date // Remove or make optional if not used in table
+  method: "credit" | "debit" | "pix" | "money"
+  createdAt?: Date
+  link?: string
 }
-
 
 
 // eslint-disable-next-line react-refresh/only-export-components
@@ -109,7 +111,7 @@ export const columns: ColumnDef<Payment>[] = [
         </Button>
       )
     },
-    cell: ({ row }) => <div className="lowercase">{row.getValue("name")}</div>,
+    cell: ({ row }) => <div className="font-semibold">{row.getValue("name")}</div>,
   },
   {
     accessorKey: "createdAt",
@@ -132,8 +134,33 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
+    accessorKey: "method",
+    header: "Método",
+    cell: ({ row }) => {
+      const method = row.getValue("method");
+      let label = "";
+      switch (method) {
+        case "credit":
+          label = "Crédito";
+          break;
+        case "debit":
+          label = "Débito";
+          break;
+        case "pix":
+          label = "PIX";
+          break;
+        case "money":
+          label = "Dinheiro";
+          break;
+        default:
+          label = String(method);
+      }
+      return <div>{label}</div>;
+    },
+  },
+  {
     accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    header: () => <div className="text-right">Valor</div>,
     cell: ({ row }) => {
       const amount = parseFloat(row.getValue("amount"))
 
@@ -165,11 +192,10 @@ export const columns: ColumnDef<Payment>[] = [
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
             >
-              Copie o ID da transação
+              Copie o ID
             </DropdownMenuItem>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>View customer</DropdownMenuItem>
-            <DropdownMenuItem>View payment details</DropdownMenuItem>
+            {payment.link && <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.link ?? "")}>Link da compra</DropdownMenuItem>}
           </DropdownMenuContent>
         </DropdownMenu>
       )
@@ -217,16 +243,8 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
     }
 
   return (
-    <div className="w-[1200px] mt-14">
+    <div className="w-[1300px] mt-7">
       <div className="flex items-center gap-4 py-4">
-        <Input
-          placeholder="Filtrar por ID..."
-          value={(table.getColumn("id")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("id")?.setFilterValue(event.target.value)
-          }
-          className="w-[120px] bg-white dark:bg-zinc-950"
-        />
 
         <Input
           placeholder="Filtrar transações..."
@@ -237,13 +255,36 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
           className="max-w-sm bg-white dark:bg-zinc-950"
         />
 
+        <Select
+          value={
+            (table.getColumn("method")?.getFilterValue() as string) ?? ""
+          }
+          onValueChange={(value) => {
+            table.getColumn("method")?.setFilterValue(
+              value === "" ? undefined : value
+            );
+          }}
+        >
+          <SelectTrigger className="w-[180px] bg-white dark:bg-zinc-950">
+            <SelectValue placeholder="Filtrar método..." className="text-gray-600" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectGroup>
+              <SelectLabel>Métodos</SelectLabel>
+              <SelectItem value="debit">Débito</SelectItem>
+              <SelectItem value="credit">Crédito</SelectItem>
+              <SelectItem value="pix">PIX</SelectItem>
+              <SelectItem value="money">Dinheiro</SelectItem>
+            </SelectGroup>
+          </SelectContent>
+        </Select>
+
         <Button 
         variant="default"
         onClick={() => {
-        table.getColumn("nome")?.setFilterValue(""); // Limpa o filtro de nomes
-        table.getColumn("email")?.setFilterValue(""); // Limpa o filtro de emails
-        table.getColumn("crn")?.setFilterValue(""); // Limpa o filtro de crn 
-        toast.success("Filtros foram limpos") // Exibe mensagem de sucesso
+          table.getColumn("name")?.setFilterValue(""); // Limpa o filtro de nomes
+          table.getColumn("method")?.setFilterValue(undefined); // Limpa o filtro do select de método
+          toast.success("Filtros foram limpos") // Exibe mensagem de sucesso
         }}
         >
             Limpar filtros
@@ -290,7 +331,7 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" className="ml-auto">
-              Columns <ChevronDown />
+              Colunas <ChevronDown />
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">

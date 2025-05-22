@@ -1,4 +1,6 @@
 export type Transaction = {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  method: any;
   id: string;
   name: string;
   amount: number;
