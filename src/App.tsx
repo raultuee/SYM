@@ -2,12 +2,12 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
  
 import { Login } from "./pages/login";
 import { ThemeProvider } from './pages/theme/theme-provider';
-import { Dashboard } from './pages/dashboard';
 
 import { Toaster } from 'sonner';
 import { Error } from './pages/error';
-import { SidebarInset, SidebarProvider, SidebarTrigger } from './components/ui/sidebar';
-import { AppSidebar } from './pages/ui/sidebar/app-sidebar';
+import { Dashboard } from './pages/ui/dashboard/dashboard';
+import { Register } from './pages/ui/register/register';
+import { Header } from './pages/ui/header/header';
 
 export function App() {
 
@@ -15,33 +15,22 @@ export function App() {
 
     <>
 
-  <ThemeProvider storageKey='save-your-money' defaultTheme='dark'>
-      <Toaster />
-    <Router>
-      
-    <SidebarProvider>
-      <AppSidebar />
+  <ThemeProvider storageKey='sym' defaultTheme='dark'>
+    <Toaster />
+      <Router>
+        <Header />
+          <Routes>
+            <Route path='/' element={<Dashboard/>}/>
 
-    <SidebarInset>
-          <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 bg-slate-100 dark:bg-black">
-              <div className='flex items-center gap-2 px-4'>
-                <SidebarTrigger className="-ml-1"/>
-              </div>
-          </header>
+            <Route path='/register' element={<Register/>}/>
+            
+            <Route path='/login' element={<Login/>}/>
 
-      <Routes>
-        <Route path='/' element={<Dashboard/>}/>
-        
-        <Route path='/login' element={<Login/>}/>
+            <Route path='*' element={<Error />} />
 
-        <Route path='*' element={<Error />} />
+          </Routes>
 
-      </Routes>
-
-      </SidebarInset>
-    </SidebarProvider>
-
-    </Router>
+      </Router>
   </ThemeProvider>
     </>
   

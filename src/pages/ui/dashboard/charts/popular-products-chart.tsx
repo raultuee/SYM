@@ -1,6 +1,9 @@
+"use client"
+
 import * as React from "react"
 import { TrendingUp } from "lucide-react"
 import { Label, Pie, PieChart } from "recharts"
+
 import {
   Card,
   CardContent,
@@ -22,6 +25,7 @@ const chartData = [
   { browser: "edge", visitors: 173, fill: "var(--color-edge)" },
   { browser: "other", visitors: 190, fill: "var(--color-other)" },
 ]
+
 const chartConfig = {
   visitors: {
     label: "Visitors",
@@ -47,12 +51,14 @@ const chartConfig = {
     color: "hsl(var(--chart-5))",
   },
 } satisfies ChartConfig
-export function PieChartDonutUI() {
+
+export function PopularProductsChart() {
   const totalVisitors = React.useMemo(() => {
     return chartData.reduce((acc, curr) => acc + curr.visitors, 0)
   }, [])
+
   return (
-    <Card className="flex flex-col">
+    <Card className="flex flex-col w-[374px] ml-auto">
       <CardHeader className="items-center pb-0">
         <CardTitle>Pie Chart - Donut with Text</CardTitle>
         <CardDescription>January - June 2024</CardDescription>

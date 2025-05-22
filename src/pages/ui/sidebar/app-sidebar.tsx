@@ -2,7 +2,8 @@
 
 import * as React from "react"
 import {
-  Citrus,
+  ArrowRightLeft,
+  CircleDollarSign,
   Hammer,
 } from "lucide-react"
 
@@ -17,7 +18,6 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "@/components/ui/sidebar"
-import { SidebarAdmin } from "./sidebar-admin"
 import { CommandDialogDemo } from "./command"
 
 const data = {
@@ -31,31 +31,21 @@ const data = {
   enterprises: [
     {
       name: "Acme Inc",
-      logo: Citrus,
+      logo: CircleDollarSign,
       plan: "Enterprise",
-    },
-    {
-      name: "Acme Corp.",
-      logo: Citrus,
-      plan: "Startup",
-    },
-    {
-      name: "Evil Corp.",
-      logo: Citrus,
-      plan: "Free",
     },
   ],
 
   pages: [
     {
-      title: "Section 1",
+      title: "Transações",
       url: "#",
-      icon: Hammer,
+      icon: ArrowRightLeft,
       isActive: false,
       items: [
         {
-          title: "Item 1",
-          url: "#",
+          title: "Tabela de Registros",
+          url: "/register",
         },
         {
           title: "Item 2",
@@ -101,14 +91,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   
   return (
 
-    <Sidebar className="bg-[#ece3d4]" collapsible="icon" {...props}>
+    <Sidebar className="bg-gray-50 dark:bg-zinc-950" collapsible="icon" {...props}>
       <SidebarHeader>
         <SidebarEnterprise enterprises={data.enterprises} />
       </SidebarHeader>
       <SidebarContent>
         <SidebarPages pages={data.pages} />
         <SidebarConfig/>
-        <SidebarAdmin />
       </SidebarContent>
       <SidebarFooter>
         <CommandDialogDemo />

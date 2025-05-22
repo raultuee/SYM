@@ -35,12 +35,12 @@ export function SidebarEnterprise({
                 size="lg"
                 className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
               >
-                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground bg-[#da2d2d]">
+                <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground bg-green-500 dark:bg-green-500">
                   <activeTeam.logo className="size-4" />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight ml-[2px]">
                   <span className="truncate font-semibold ">
-                    NutriAqui
+                    Save Your Money
                   </span>
                   <span className="truncate text-xs">Empresa</span>
                 </div>
