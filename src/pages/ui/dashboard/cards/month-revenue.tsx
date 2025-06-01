@@ -40,7 +40,10 @@ export function MonthRevenueCard() {
             })
             .reduce((acc, t) => acc + (t.amount || 0), 0);
 
-        setAmount(sumCurrentMonth);
+        // Soma total de todas as transações
+        const sumTotal = transactions.reduce((acc, t) => acc + (t.amount || 0), 0);
+
+        setAmount(sumTotal); // Mostra o saldo total no número principal
 
         // Calcula a diferença percentual em relação ao mês passado
         let diff = 0;
@@ -56,7 +59,7 @@ export function MonthRevenueCard() {
         <Card>
             <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-base font-semibold">
-                    Receita total (mês)
+                    Saldo registrado
                 </CardTitle>
                 <DollarSign className="h-4 w-4 text-muted-foreground" />
             </CardHeader>

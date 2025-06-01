@@ -1,8 +1,8 @@
 import React from "react";
-import { MonthRevenueCard } from "./charts/month-revenue";
-import { MonthOrdersAmountCard } from "./charts/month-earnings";
-import { DayOrdersAmountCard } from "./charts/amount-day";
-import { MonthCanceledOrdersAmountCard } from "./charts/month-expenses";
+import { MonthRevenueCard } from "./cards/month-revenue";
+import { MonthOrdersAmountCard } from "./cards/month-earnings";
+import { DayOrdersAmountCard } from "./cards/amount-day";
+import { MonthCanceledOrdersAmountCard } from "./cards/month-expenses";
 import { RevenueChart } from "./charts/revenue-chart";
 import { PopularProductsChart } from "./charts/method-popular";
 import { Separator } from "@/components/ui/separator";
@@ -18,7 +18,7 @@ export function Dashboard() {
   if (loading) {
     // Aqui você pode retornar skeletons ou um spinner global
     return (
-      <div className="flex flex-col min-h-screen w-full gap-6 p-14 dark:bg-black">
+      <div className="flex flex-col min-h-screen w-full gap-6 p-14">
         {/* Exemplo de skeleton simples */}
         <div className="animate-pulse h-10 w-1/3 bg-muted rounded mb-6" />
         <div className="grid grid-cols-4 gap-7">
@@ -36,7 +36,7 @@ export function Dashboard() {
 
   // Quando loading for false, renderize os cards reais normalmente
   return (
-    <div className="flex flex-col min-h-screen w-full gap-6 p-14 dark:bg-black">
+    <div className="flex flex-col min-h-screen w-full gap-6 p-14 ">
       <h1 className="text-4xl font-bold tracking-tight self-start">Dashboard</h1>
       <div className="grid grid-cols-4 gap-7">
         <MonthRevenueCard />

@@ -203,7 +203,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
 ]
 
-export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }: { data?: Payment[], onAddTransaction: (t: { name: string; amount: number; type: boolean }) => void, onDeleteTransactions?: (ids: string[]) => void }) {
+export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }: { data?: Payment[], onAddTransaction: (t: { name: string; amount: number; type: boolean; method: "credit" | "debit" | "pix" | "money"; }) => void, onDeleteTransactions?: (ids: string[]) => void }) {
   const [loading, setLoading] = React.useState(true)
   const [sorting, setSorting] = React.useState<SortingState>([])
   const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
@@ -252,7 +252,7 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm bg-white dark:bg-zinc-950"
+          className="max-w-sm"
         />
 
         <Select
@@ -265,7 +265,7 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
             );
           }}
         >
-          <SelectTrigger className="w-[180px] bg-white dark:bg-zinc-950">
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filtrar método..." className="text-gray-600" />
           </SelectTrigger>
           <SelectContent>
@@ -356,7 +356,7 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
         </DropdownMenu>
       </div>
       <div className="rounded-md border">
-        <Table className="bg-white dark:bg-zinc-950 rounded-md">
+        <Table className="rounded-md">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

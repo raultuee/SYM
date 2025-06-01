@@ -101,7 +101,7 @@ export function TableSkeleton({
   onAddTransaction
 }: {
   data?: Transações[],
-  onAddTransaction: (t: { name: string; amount: number; type: boolean }) => void,
+  onAddTransaction: (t: { name: string; amount: number; type: boolean; method: "credit" | "debit" | "pix" | "money"; }) => void,
   onDeleteTransactions?: (ids: string[]) => void
 }) {
   const [sorting, setSorting] = React.useState<SortingState>([])
@@ -142,11 +142,11 @@ export function TableSkeleton({
           onChange={(event) =>
             table.getColumn("name")?.setFilterValue(event.target.value)
           }
-          className="max-w-sm bg-white dark:bg-zinc-950"
+          className="max-w-sm"
         />
 
         <Select>
-          <SelectTrigger className="w-[180px] bg-white dark:bg-zinc-950">
+          <SelectTrigger className="w-[180px]">
             <SelectValue placeholder="Filtrar método..." className="text-gray-600" />
           </SelectTrigger>
           <SelectContent>
@@ -203,7 +203,7 @@ export function TableSkeleton({
         </DropdownMenu>
       </div>
       <div className="rounded-md border">
-        <Table className="w-[1300px] bg-white dark:bg-zinc-950 rounded-md p-3">
+        <Table className="w-[1300px] rounded-md p-3">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>

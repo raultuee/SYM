@@ -20,7 +20,7 @@ import { CircleFadingPlus } from "lucide-react";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 
-export function DialogForm({ onAddTransaction }: { onAddTransaction: (t: { name: string; amount: number; type: boolean }) => void }) {
+export function DialogForm({ onAddTransaction }: { onAddTransaction: (t: { name: string; amount: number; type: boolean; method: "credit" | "debit" | "pix" | "money"; }) => void }) {
     const [transactions, setTransactions] = useState<Array<z.infer<typeof formSchema>>>([]);
 
     const formSchema = z.object({
@@ -108,7 +108,7 @@ export function DialogForm({ onAddTransaction }: { onAddTransaction: (t: { name:
                     <FormLabel>Método</FormLabel>
                     <Select
                       onValueChange={field.onChange}
-                      defaultValue={field.value}
+                      value={field.value}
                     >
                       <FormControl>
                         <SelectTrigger>

@@ -9,6 +9,7 @@ const formSchema = z.object({
   name: z.string().min(2),
   amount: z.number().min(0),
   type: z.boolean(),
+  method: z.enum(["credit", "debit", "pix", "money"])
 });
 
 export type Transaction = z.infer<typeof formSchema> & { id: string; createdAt: Date };
@@ -62,7 +63,7 @@ export function Register() {
 
 
   return (
-        <div className="flex justify-center min-h-screen bg-slate-100 dark:bg-black overflow-hidden">
+        <div className="flex justify-center min-h-screen overflow-hidden">
             <div className="mt-[80px] gap-10 items-center justify-center">
 
                 <SubHeaderRegister />
