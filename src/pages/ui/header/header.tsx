@@ -1,4 +1,4 @@
-import { PiggyBank, Home, ArrowLeftRight } from 'lucide-react'
+import { Home, ArrowLeftRight } from 'lucide-react'
 
 import { AccountMenu } from './ui/account-menu'
 import { NavLink } from './ui/nav-link'
@@ -9,7 +9,8 @@ export function Header() {
   return (
     <div className="">
       <div className="flex h-16 items-center gap-6 px-6">
-        <PiggyBank className="h-6 w-6" />
+        
+        <p className='font-bold text-emerald-700 tracking-tight'>SYM</p>
 
         <Separator orientation="vertical" className="h-6" />
 

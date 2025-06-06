@@ -357,7 +357,7 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
       </div>
       <div className="rounded-md border">
         <Table className="rounded-md">
-          <TableHeader>
+          <TableHeader className="bg-[#171717]">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {

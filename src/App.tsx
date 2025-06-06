@@ -16,7 +16,7 @@ export function App() {
     <>
 
   <ThemeProvider storageKey='sym' defaultTheme='dark'>
-    <Toaster />
+    <Toaster position='top-center' className='bg-[#171717]' />
       <Router>
         <Header />
           <Routes>
