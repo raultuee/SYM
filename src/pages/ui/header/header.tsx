@@ -4,6 +4,7 @@ import { AccountMenu } from './ui/account-menu'
 import { NavLink } from './ui/nav-link'
 import { ThemeToggle } from './ui/toggle-theme'
 import { Separator } from '@/components/ui/separator'
+import { Notification } from './ui/notification'
 
 export function Header() {
   return (
@@ -26,6 +27,7 @@ export function Header() {
         </nav>
 
         <div className="ml-auto flex items-center gap-2">
+          <Notification />
           <ThemeToggle />
           <AccountMenu />
         </div>

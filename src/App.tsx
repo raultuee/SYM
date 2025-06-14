@@ -8,6 +8,7 @@ import { Error } from './pages/error';
 import { Dashboard } from './pages/ui/dashboard/dashboard';
 import { Register } from './pages/ui/register/register';
 import { Header } from './pages/ui/header/header';
+import WelcomePage from './pages/welcome';
 
 export function App() {
 
@@ -25,6 +26,8 @@ export function App() {
             <Route path='/register' element={<Register/>}/>
             
             <Route path='/login' element={<Login/>}/>
+
+            <Route path='/welcome' element={<WelcomePage/>}/>
 
             <Route path='*' element={<Error />} />
 

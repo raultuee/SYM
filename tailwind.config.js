@@ -86,6 +86,7 @@ module.exports = {
   		},
       fontFamily: {
         sans: ['Figtree', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+		title: ['Edu VIC WA NT Hand', 'cursive'],
         // Você pode adicionar outras famílias se quiser, ex: mono, serif...
       },
   	}

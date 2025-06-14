@@ -10,6 +10,8 @@ import { Separator } from "@/components/ui/separator";
 export function Dashboard() {
   const [loading, setLoading] = React.useState(true);
 
+  // Simulação: substitua por sua lógica real de busca de transações
+
   React.useEffect(() => {
     const timer = setTimeout(() => setLoading(false), 1500); // 1.5s de delay global
     return () => clearTimeout(timer);
@@ -34,9 +36,8 @@ export function Dashboard() {
     );
   }
 
-  // Quando loading for false, renderize os cards reais normalmente
   return (
-    <div className="flex flex-col min-h-screen w-full gap-6 p-14 ">
+    <div className="flex flex-col min-h-screen w-full gap-4 p-14 ">
       <h1 className="text-4xl font-bold tracking-tight self-start">Dashboard</h1>
       <div className="grid grid-cols-4 gap-7">
         <MonthRevenueCard />
