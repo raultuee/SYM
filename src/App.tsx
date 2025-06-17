@@ -21,13 +21,13 @@ export function App() {
       <Router>
         <Header />
           <Routes>
-            <Route path='/' element={<Dashboard/>}/>
+            <Route path='/dashboard' element={<Dashboard/>}/>
 
             <Route path='/register' element={<Register/>}/>
             
             <Route path='/login' element={<Login/>}/>
 
-            <Route path='/welcome' element={<WelcomePage/>}/>
+            <Route path='/' element={<WelcomePage/>}/>
 
             <Route path='*' element={<Error />} />
 

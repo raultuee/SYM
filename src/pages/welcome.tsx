@@ -54,7 +54,7 @@ export default function WelcomePage() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 1, duration: 0.5 }}
         >
-          <Link to="/login">
+          <Link to="/dashboard">
             <Button size="lg">Comece agora</Button>
           </Link>
         </motion.div>
