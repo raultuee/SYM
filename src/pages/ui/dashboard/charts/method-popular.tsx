@@ -150,7 +150,7 @@ export function PopularProductsChart() {
           )}
           <TrendingUp className="h-4 w-4" />
         </div>
-        <div className="leading-none text-muted-foreground">
+        <div className="leading-none text-muted-foreground text-center">
           Métodos de pagamento mais populares
         </div>
       </CardFooter>
