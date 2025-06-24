@@ -47,7 +47,7 @@ export function Register() {
   function SubHeaderRegister() {
       return (
       <>
-        <h1 className="text-black dark:text-white text-4xl font-bold tracking-tight pb-3">Tabela de Registros</h1>
+        <h1 className="text-black dark:text-white text-4xl font-bold tracking-tight pb-3">Registro</h1>
   
         <Breadcrumb>
               <BreadcrumbList>

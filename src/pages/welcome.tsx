@@ -54,7 +54,7 @@ export default function WelcomePage() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 1, duration: 0.5 }}
         >
-          <Link to="/dashboard">
+          <Link to="/register">
             <Button size="lg">Comece agora</Button>
           </Link>
         </motion.div>
@@ -81,7 +81,7 @@ export default function WelcomePage() {
           animate={{ scale: 1, opacity: 1 }}
           transition={{ delay: 1, duration: 0.5 }}
         >
-          <Link to="/documentation">
+          <Link to="https://github.com/raultuee/SYM">
             <Button size="lg" variant="link" className="mb-12">Documentação do site</Button>
           </Link>
         </motion.div>
