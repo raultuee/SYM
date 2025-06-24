@@ -1,6 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
  
-import { Login } from "./pages/login";
 import { ThemeProvider } from './pages/theme/theme-provider';
 
 import { Toaster } from 'sonner';
@@ -24,8 +23,6 @@ export function App() {
             <Route path='/dashboard' element={<Dashboard/>}/>
 
             <Route path='/register' element={<Register/>}/>
-            
-            <Route path='/login' element={<Login/>}/>
 
             <Route path='/' element={<WelcomePage/>}/>
 

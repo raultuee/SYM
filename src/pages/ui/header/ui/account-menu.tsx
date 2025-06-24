@@ -1,4 +1,4 @@
-import { Building, ChevronDown, LogOut } from 'lucide-react'
+import { Building, ChevronDown } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogTrigger } from '@/components/ui/dialog'
@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { Link } from 'react-router-dom'
 
 export function AccountMenu() {
 
@@ -34,20 +35,13 @@ export function AccountMenu() {
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
           <DialogTrigger asChild>
-            <DropdownMenuItem>
-              <Building className="mr-2 h-4 w-4" />
-              <span>Perfil da loja</span>
-            </DropdownMenuItem>
+            <Link to="https://github.com/raultuee/SYM">
+              <DropdownMenuItem>
+                <Building className="mr-2 h-4 w-4" />
+                <span>Perfil da loja</span>
+              </DropdownMenuItem>
+            </Link>
           </DialogTrigger>
-          <DropdownMenuItem
-            asChild
-            className="text-rose-500 dark:text-rose-400"
-          >
-            <button className="w-full">
-              <LogOut className="mr-2 h-4 w-4" />
-              <span>Sair</span>
-            </button>
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </Dialog>

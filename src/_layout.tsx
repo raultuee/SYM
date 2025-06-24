@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@/components/theme-provider"
+import { ThemeProvider } from "./pages/theme/theme-provider" 
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -7,10 +7,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <head />
         <body>
           <ThemeProvider
-            attribute="class"
             defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
           >
             {children}
           </ThemeProvider>
