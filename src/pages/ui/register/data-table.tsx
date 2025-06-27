@@ -234,7 +234,7 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
 
   React.useEffect(() => {
       // Simule o carregamento dos dados (substitua pelo seu fetch real)
-      const timer = setTimeout(() => setLoading(false), 3000)
+      const timer = setTimeout(() => setLoading(false), 1000)
       return () => clearTimeout(timer)
     }, [])
   
@@ -357,7 +357,7 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
       </div>
       <div className="rounded-md border">
         <Table className="rounded-md">
-          <TableHeader className="bg-[#171717]">
+          <TableHeader className="dark:bg-[#171717]">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => {
