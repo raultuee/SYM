@@ -20,7 +20,7 @@ export function Dashboard() {
   if (loading) {
     // Aqui você pode retornar skeletons ou um spinner global
     return (
-      <div className="flex flex-col min-h-screen w-full gap-6 p-14">
+      <div className="flex flex-col w-full gap-6 p-14" style={{ height: "calc(100vh - 64px)" }}>
         {/* Exemplo de skeleton simples */}
         <div className="animate-pulse h-10 w-1/3 bg-muted rounded mb-6" />
         <div className="grid grid-cols-4 gap-7">
@@ -37,7 +37,7 @@ export function Dashboard() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen w-full gap-4 p-14 ">
+    <div className="flex flex-col w-full gap-4 p-14 " style={{ height: "calc(100vh - 64px)" }}>
       <h1 className="text-4xl font-bold tracking-tight self-start">Dashboard</h1>
       <div className="grid grid-cols-4 gap-7">
         <MonthRevenueCard />

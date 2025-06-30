@@ -6,6 +6,7 @@ import { Toaster } from 'sonner';
 import { Error } from './pages/error';
 import { Dashboard } from './pages/ui/dashboard/dashboard';
 import { Register } from './pages/ui/register/register';
+import { Caixinha } from './pages/ui/caixinha/caixinha';
 import { Header } from './pages/ui/header/header';
 import WelcomePage from './pages/welcome';
 
@@ -23,6 +24,9 @@ export function App() {
             <Route path='/dashboard' element={<Dashboard/>}/>
 
             <Route path='/register' element={<Register/>}/>
+
+            <Route path='/caixinha' element={<Caixinha/>}/>
+
 
             <Route path='/' element={<WelcomePage/>}/>
 

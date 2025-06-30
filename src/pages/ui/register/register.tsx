@@ -63,7 +63,7 @@ export function Register() {
 
 
   return (
-        <div className="flex justify-center min-h-screen overflow-hidden">
+        <div className="flex justify-center overflow-hidden" style={{ height: "calc(100vh - 64px)" }}>
             <div className="mt-[80px] gap-10 items-center justify-center">
 
                 <SubHeaderRegister />

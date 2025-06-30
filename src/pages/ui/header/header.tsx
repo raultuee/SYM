@@ -1,4 +1,4 @@
-import { Home, ArrowLeftRight } from 'lucide-react'
+import { Home, ArrowLeftRight, Archive } from 'lucide-react'
 
 import { AccountMenu } from './ui/account-menu'
 import { NavLink } from './ui/nav-link'
@@ -23,6 +23,10 @@ export function Header() {
           <NavLink to="/register">
             <ArrowLeftRight className="h-4 w-4" />
             Transações
+          </NavLink>
+          <NavLink to="/caixinha">
+            <Archive className="h-4 w-4" />
+            Caixinha
           </NavLink>
         </nav>
 
