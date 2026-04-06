@@ -13,44 +13,30 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
-import { ArrowUpDown, ChevronDown, ChevronsLeft, ChevronsRight, MoreHorizontal, TrendingDown, TrendingUp } from "lucide-react"
+import {
+  ArrowUpDown, ChevronDown, ChevronsLeft, ChevronsRight,
+  MoreHorizontal, TrendingDown, TrendingUp, Trash,
+} from "lucide-react"
 import { Checkbox } from "@/components/ui/checkbox"
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuCheckboxItem, DropdownMenuContent,
+  DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Input } from "@/components/ui/input"
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table"
 import { DialogForm } from "./create-transaction"
 import { TableSkeleton } from "./skeleton-table"
-
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader,
+  AlertDialogTitle, AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button"
-import { Trash } from "lucide-react"
 import { toast } from "sonner"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
+import {
+  Select, SelectContent, SelectGroup, SelectItem,
+  SelectLabel, SelectTrigger, SelectValue,
+} from "@/components/ui/select"
 
 export type Payment = {
   id: string
@@ -62,6 +48,25 @@ export type Payment = {
   link?: string
 }
 
+const methodLabel: Record<string, string> = {
+  credit: "Crédito",
+  debit: "Débito",
+  pix: "PIX",
+  money: "Dinheiro",
+};
+
+const methodBadge: Record<string, string> = {
+  credit: "rgba(123,97,255,0.15)",
+  debit: "rgba(0,201,255,0.12)",
+  pix: "rgba(0,255,178,0.12)",
+  money: "rgba(255,214,0,0.12)",
+};
+const methodColor: Record<string, string> = {
+  credit: "#7B61FF",
+  debit: "#00C9FF",
+  pix: "#00FFB2",
+  money: "#FFD600",
+};
 
 // eslint-disable-next-line react-refresh/only-export-components
 export const columns: ColumnDef<Payment>[] = [
@@ -69,20 +74,17 @@ export const columns: ColumnDef<Payment>[] = [
     id: "select",
     header: ({ table }) => (
       <Checkbox
-        className="ml-2"
-        checked={
-          table.getIsAllPageRowsSelected() ||
-          (table.getIsSomePageRowsSelected() && "indeterminate")
-        }
-        onCheckedChange={(value: unknown) => table.toggleAllPageRowsSelected(!!value)}
+        style={{ marginLeft: 8, accentColor: "#00FFB2" }}
+        checked={table.getIsAllPageRowsSelected() || (table.getIsSomePageRowsSelected() && "indeterminate")}
+        onCheckedChange={(v: unknown) => table.toggleAllPageRowsSelected(!!v)}
         aria-label="Select all"
       />
     ),
     cell: ({ row }) => (
       <Checkbox
-        className="ml-2"
+        style={{ marginLeft: 8, accentColor: "#00FFB2" }}
         checked={row.getIsSelected()}
-        onCheckedChange={(value: unknown) => row.toggleSelected(!!value)}
+        onCheckedChange={(v: unknown) => row.toggleSelected(!!v)}
         aria-label="Select row"
       />
     ),
@@ -91,131 +93,170 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "type",
-    header: "Tipo",
-    cell: ({ row }) => (
-      <div className="capitalize">
-        {row.getValue("type") === true ? <TrendingUp className="w-4" color="green" /> : <TrendingDown className="w-4" color="red" />}
-      </div>
-    ),
+    header: "TIPO",
+    cell: ({ row }) =>
+      row.getValue("type") === true
+        ? <TrendingUp size={16} color="#00FFB2" />
+        : <TrendingDown size={16} color="#FF6B6B" />,
   },
   {
     accessorKey: "name",
-    header: ({ column }) => {
-      return (
-        <Button
-          variant="ghost"
-          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-        >
-          Nome
-          <ArrowUpDown />
-        </Button>
-      )
-    },
-    cell: ({ row }) => <div className="font-semibold">{row.getValue("name")}</div>,
+    header: ({ column }) => (
+      <button
+        onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        style={{
+          background: "none", border: "none", cursor: "pointer",
+          color: "rgba(240,238,230,0.5)", fontSize: 11,
+          letterSpacing: "0.12em", fontFamily: "inherit",
+          display: "flex", alignItems: "center", gap: 6,
+        }}
+      >
+        NOME <ArrowUpDown size={12} />
+      </button>
+    ),
+    cell: ({ row }) => (
+      <span style={{ fontWeight: 600, color: "#F0EEE6", fontSize: 14 }}>
+        {row.getValue("name")}
+      </span>
+    ),
   },
   {
     accessorKey: "createdAt",
-    header: "Criado em",
+    header: () => <span style={{ fontSize: 11, letterSpacing: "0.12em", color: "rgba(240,238,230,0.5)" }}>CRIADO EM</span>,
     cell: ({ row }) => {
       const date = row.getValue("createdAt") as Date | string;
       return (
-        <span>
-          {date
-            ? new Date(date).toLocaleString("pt-BR", {
-                day: "2-digit",
-                month: "2-digit",
-                year: "numeric",
-                hour: "2-digit",
-                minute: "2-digit",
-              })
-            : ""}
+        <span style={{ fontSize: 12, color: "rgba(240,238,230,0.4)", fontVariantNumeric: "tabular-nums" }}>
+          {date ? new Date(date).toLocaleString("pt-BR", {
+            day: "2-digit", month: "2-digit", year: "numeric",
+            hour: "2-digit", minute: "2-digit",
+          }) : "—"}
         </span>
       );
     },
   },
   {
     accessorKey: "method",
-    header: "Método",
+    header: () => <span style={{ fontSize: 11, letterSpacing: "0.12em", color: "rgba(240,238,230,0.5)" }}>MÉTODO</span>,
     cell: ({ row }) => {
-      const method = row.getValue("method");
-      let label = "";
-      switch (method) {
-        case "credit":
-          label = "Crédito";
-          break;
-        case "debit":
-          label = "Débito";
-          break;
-        case "pix":
-          label = "PIX";
-          break;
-        case "money":
-          label = "Dinheiro";
-          break;
-        default:
-          label = String(method);
-      }
-      return <div>{label}</div>;
+      const m = row.getValue("method") as string;
+      return (
+        <span style={{
+          display: "inline-block",
+          background: methodBadge[m] || "rgba(255,255,255,0.06)",
+          color: methodColor[m] || "#F0EEE6",
+          borderRadius: 4, padding: "3px 10px",
+          fontSize: 11, letterSpacing: "0.08em", fontWeight: 600,
+        }}>
+          {methodLabel[m] || m}
+        </span>
+      );
     },
   },
   {
     accessorKey: "amount",
-    header: () => <div className="text-right">Valor</div>,
+    header: () => <div style={{ textAlign: "right", fontSize: 11, letterSpacing: "0.12em", color: "rgba(240,238,230,0.5)" }}>VALOR</div>,
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-
-      // Format the amount as a dollar amount
+      const amount = parseFloat(row.getValue("amount"));
       const formatted = new Intl.NumberFormat("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-      }).format(amount)
-
-      return <div className="text-right font-medium">{formatted}</div>
+        style: "currency", currency: "BRL",
+      }).format(amount);
+      return (
+        <div style={{
+          textAlign: "right", fontWeight: 700,
+          color: amount >= 0 ? "#00FFB2" : "#FF6B6B",
+          fontVariantNumeric: "tabular-nums", fontSize: 14,
+        }}>
+          {formatted}
+        </div>
+      );
     },
   },
   {
     id: "actions",
     enableHiding: false,
     cell: ({ row }) => {
-      const payment = row.original
-
+      const payment = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal />
-            </Button>
+            <button style={{
+              background: "none", border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: 4, width: 32, height: 32, cursor: "pointer",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              color: "rgba(240,238,230,0.4)", transition: "all 0.15s",
+            }}
+              onMouseEnter={e => {
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.2)";
+                (e.currentTarget as HTMLButtonElement).style.color = "#F0EEE6";
+              }}
+              onMouseLeave={e => {
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.08)";
+                (e.currentTarget as HTMLButtonElement).style.color = "rgba(240,238,230,0.4)";
+              }}
+            >
+              <MoreHorizontal size={14} />
+            </button>
           </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuContent
+            align="end"
+            style={{
+              background: "#0e0e1a", border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 6, fontFamily: "'DM Mono', monospace",
+              color: "#F0EEE6", fontSize: 13,
+            }}
+          >
+            <DropdownMenuLabel style={{ color: "rgba(240,238,230,0.35)", fontSize: 10, letterSpacing: "0.12em" }}>
+              AÇÕES
+            </DropdownMenuLabel>
             <DropdownMenuItem
               onClick={() => navigator.clipboard.writeText(payment.id)}
+              style={{ cursor: "pointer" }}
             >
-              Copie o ID
+              Copiar ID
             </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            {payment.link && <DropdownMenuItem onClick={() => navigator.clipboard.writeText(payment.link ?? "")}>Link da compra</DropdownMenuItem>}
+            <DropdownMenuSeparator style={{ background: "rgba(255,255,255,0.06)" }} />
+            {payment.link && (
+              <DropdownMenuItem
+                onClick={() => navigator.clipboard.writeText(payment.link ?? "")}
+                style={{ cursor: "pointer" }}
+              >
+                Link da compra
+              </DropdownMenuItem>
+            )}
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];
 
-export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }: { data?: Payment[], onAddTransaction: (t: { name: string; amount: number; type: boolean; method: "credit" | "debit" | "pix" | "money"; }) => void, onDeleteTransactions?: (ids: string[]) => void }) {
-  const [loading, setLoading] = React.useState(true)
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
+const inputStyle: React.CSSProperties = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: 4, color: "#F0EEE6",
+  fontFamily: "'DM Mono', monospace", fontSize: 13,
+  padding: "8px 14px", outline: "none",
+  transition: "border-color 0.2s",
+};
+
+export function DataTable({
+  data = [],
+  onAddTransaction,
+  onDeleteTransactions,
+}: {
+  data?: Payment[];
+  onAddTransaction: (t: { name: string; amount: number; type: boolean; method: "credit" | "debit" | "pix" | "money" }) => void;
+  onDeleteTransactions?: (ids: string[]) => void;
+}) {
+  const [loading, setLoading] = React.useState(true);
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
-    data,
-    columns,
+    data, columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -224,53 +265,50 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  })
+    state: { sorting, columnFilters, columnVisibility, rowSelection },
+  });
 
   React.useEffect(() => {
-      // Simule o carregamento dos dados (substitua pelo seu fetch real)
-      const timer = setTimeout(() => setLoading(false), 1000)
-      return () => clearTimeout(timer)
-    }, [])
-  
-    if (loading) {
-      return <TableSkeleton onAddTransaction={onAddTransaction} />
-    }
+    const timer = setTimeout(() => setLoading(false), 900);
+    return () => clearTimeout(timer);
+  }, []);
+
+  if (loading) return <TableSkeleton onAddTransaction={onAddTransaction} />;
+
+  const selectedCount = table.getSelectedRowModel().rows.length;
 
   return (
-    <div className="w-[1300px] mt-7">
-      <div className="flex items-center gap-4 py-4">
+    <div style={{ width: "100%", fontFamily: "'DM Mono', monospace" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500;700&display=swap');
+        .sym-table tr:hover td { background: rgba(255,255,255,0.02) !important; }
+        .sym-table tr[data-state=selected] td { background: rgba(0,255,178,0.04) !important; }
+        .sym-input:focus { border-color: #00FFB2 !important; box-shadow: 0 0 0 2px rgba(0,255,178,0.08) !important; }
+      `}</style>
 
-        <Input
+      {/* Toolbar */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+        <input
+          className="sym-input"
           placeholder="Filtrar transações..."
           value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
+          onChange={e => table.getColumn("name")?.setFilterValue(e.target.value)}
+          style={{ ...inputStyle, width: 220 }}
         />
 
         <Select
-          value={
-            (table.getColumn("method")?.getFilterValue() as string) ?? ""
-          }
-          onValueChange={(value) => {
-            table.getColumn("method")?.setFilterValue(
-              value === "" ? undefined : value
-            );
-          }}
+          value={(table.getColumn("method")?.getFilterValue() as string) ?? ""}
+          onValueChange={v => table.getColumn("method")?.setFilterValue(v === "" ? undefined : v)}
         >
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filtrar método..." className="text-gray-600" />
+          <SelectTrigger style={{ ...inputStyle, width: 160 }}>
+            <SelectValue placeholder="Método..." />
           </SelectTrigger>
-          <SelectContent>
+          <SelectContent style={{
+            background: "#0e0e1a", border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 6, color: "#F0EEE6", fontFamily: "'DM Mono', monospace",
+          }}>
             <SelectGroup>
-              <SelectLabel>Métodos</SelectLabel>
+              <SelectLabel style={{ fontSize: 10, letterSpacing: "0.12em", color: "rgba(240,238,230,0.3)" }}>MÉTODOS</SelectLabel>
               <SelectItem value="debit">Débito</SelectItem>
               <SelectItem value="credit">Crédito</SelectItem>
               <SelectItem value="pix">PIX</SelectItem>
@@ -279,115 +317,164 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
           </SelectContent>
         </Select>
 
-        <Button 
-        variant="default"
-        onClick={() => {
-          table.getColumn("name")?.setFilterValue(""); // Limpa o filtro de nomes
-          table.getColumn("method")?.setFilterValue(undefined); // Limpa o filtro do select de método
-          toast.success("Filtros foram limpos") // Exibe mensagem de sucesso
-        }}
+        <button
+          onClick={() => {
+            table.getColumn("name")?.setFilterValue("");
+            table.getColumn("method")?.setFilterValue(undefined);
+            toast.success("Filtros limpos");
+          }}
+          style={{
+            background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+            borderRadius: 4, color: "rgba(240,238,230,0.5)", padding: "8px 16px",
+            fontSize: 12, letterSpacing: "0.08em", cursor: "pointer",
+            fontFamily: "'DM Mono', monospace", transition: "all 0.2s",
+          }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.25)";
+            (e.currentTarget as HTMLButtonElement).style.color = "#F0EEE6";
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(255,255,255,0.1)";
+            (e.currentTarget as HTMLButtonElement).style.color = "rgba(240,238,230,0.5)";
+          }}
         >
-            Limpar filtros
-        </Button>
+          LIMPAR
+        </button>
 
         <DialogForm onAddTransaction={onAddTransaction} />
 
-        {/* Botão extra aparece se houver linhas selecionadas */}
-        {table.getSelectedRowModel().rows.length > 0 && (
+        {selectedCount > 0 && (
           <AlertDialog>
-      <AlertDialogTrigger asChild>
-        <Button variant="destructive"><Trash/> Deletar transação</Button>
-      </AlertDialogTrigger>
-      <AlertDialogContent>
-        <AlertDialogHeader>
-          <AlertDialogTitle>Você tem certeza?</AlertDialogTitle>
-          <AlertDialogDescription>
-            Esta ação não pode ser desfeita. Você tem certeza que deseja deletar esta transação?
-          </AlertDialogDescription>
-        </AlertDialogHeader>
-        <AlertDialogFooter>
-          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-          <AlertDialogAction
-          className="bg-red-700 text-white hover:bg-red-500"
-          onClick={() => {
-              // Obtenha os IDs das linhas selecionadas
-              const selectedIds = table.getSelectedRowModel().rows.map(row => row.original.id);
-              // Atualize o estado (ou chame uma função do pai, se necessário)
-              if (typeof onDeleteTransactions === "function") {
-                onDeleteTransactions(selectedIds);
-              }
-              // Se não houver função, você pode usar um setData se o estado estiver aqui
-              // Limpe a seleção
-              table.resetRowSelection();
-              toast.success("Transação deletada.");
-            }}
-
-          >Deletar</AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    </AlertDialog>
+            <AlertDialogTrigger asChild>
+              <button style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                background: "rgba(255,107,107,0.12)", border: "1px solid rgba(255,107,107,0.3)",
+                borderRadius: 4, color: "#FF6B6B", padding: "8px 16px",
+                fontSize: 12, letterSpacing: "0.08em", cursor: "pointer",
+                fontFamily: "'DM Mono', monospace", transition: "all 0.2s",
+              }}
+                onMouseEnter={e => (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,107,107,0.2)"}
+                onMouseLeave={e => (e.currentTarget as HTMLButtonElement).style.background = "rgba(255,107,107,0.12)"}
+              >
+                <Trash size={13} />
+                DELETAR ({selectedCount})
+              </button>
+            </AlertDialogTrigger>
+            <AlertDialogContent style={{
+              background: "#0e0e1a", border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 10, color: "#F0EEE6",
+              fontFamily: "'DM Mono', monospace",
+            }}>
+              <AlertDialogHeader>
+                <AlertDialogTitle style={{ fontFamily: "'DM Serif Display', Georgia, serif", fontSize: 20 }}>
+                  Confirmar exclusão
+                </AlertDialogTitle>
+                <AlertDialogDescription style={{ color: "rgba(240,238,230,0.45)", fontSize: 13 }}>
+                  Você está prestes a deletar {selectedCount} transaç{selectedCount > 1 ? "ões" : "ão"}. Esta ação não pode ser desfeita.
+                </AlertDialogDescription>
+              </AlertDialogHeader>
+              <AlertDialogFooter style={{ gap: 10 }}>
+                <AlertDialogCancel style={{
+                  background: "transparent", border: "1px solid rgba(255,255,255,0.15)",
+                  color: "#F0EEE6", borderRadius: 4, fontFamily: "'DM Mono', monospace", fontSize: 12,
+                }}>
+                  CANCELAR
+                </AlertDialogCancel>
+                <AlertDialogAction
+                  style={{
+                    background: "#FF6B6B", color: "#080810", borderRadius: 4,
+                    fontFamily: "'DM Mono', monospace", fontSize: 12,
+                    fontWeight: 700, letterSpacing: "0.08em", border: "none",
+                  }}
+                  onClick={() => {
+                    const ids = table.getSelectedRowModel().rows.map(r => r.original.id);
+                    if (typeof onDeleteTransactions === "function") onDeleteTransactions(ids);
+                    table.resetRowSelection();
+                    toast.success("Transações deletadas.");
+                  }}
+                >
+                  DELETAR
+                </AlertDialogAction>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialog>
         )}
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Colunas <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        {/* Colunas toggle */}
+        <div style={{ marginLeft: "auto" }}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                background: "transparent", border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 4, color: "rgba(240,238,230,0.5)", padding: "8px 14px",
+                fontSize: 12, letterSpacing: "0.08em", cursor: "pointer",
+                fontFamily: "'DM Mono', monospace",
+              }}>
+                COLUNAS <ChevronDown size={12} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" style={{
+              background: "#0e0e1a", border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 6, color: "#F0EEE6", fontFamily: "'DM Mono', monospace", fontSize: 12,
+            }}>
+              {table.getAllColumns().filter(c => c.getCanHide()).map(column => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  checked={column.getIsVisible()}
+                  onCheckedChange={v => column.toggleVisibility(!!v)}
+                  style={{ letterSpacing: "0.06em", textTransform: "uppercase", fontSize: 11 }}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
-      <div className="rounded-md border">
-        <Table className="rounded-md">
-          <TableHeader className="dark:bg-[#171717]">
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
+
+      {/* Table */}
+      <div style={{
+        border: "1px solid rgba(255,255,255,0.07)",
+        borderRadius: 8, overflow: "hidden",
+        background: "rgba(255,255,255,0.015)",
+      }}>
+        <Table className="sym-table">
+          <TableHeader>
+            {table.getHeaderGroups().map(hg => (
+              <TableRow key={hg.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                {hg.headers.map(header => (
+                  <TableHead
+                    key={header.id}
+                    style={{
+                      background: "rgba(255,255,255,0.02)", padding: "14px 16px",
+                      fontSize: 11, letterSpacing: "0.12em", color: "rgba(240,238,230,0.4)",
+                      fontFamily: "'DM Mono', monospace", borderBottom: "1px solid rgba(255,255,255,0.06)",
+                    }}
+                  >
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+              table.getRowModel().rows.map(row => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() ? "selected" : undefined}
+                  style={{
+                    borderBottom: "1px solid rgba(255,255,255,0.04)",
+                    transition: "background 0.15s",
+                  }}
                 >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
+                  {row.getVisibleCells().map(cell => (
+                    <TableCell
+                      key={cell.id}
+                      style={{ padding: "14px 16px", color: "#F0EEE6", fontSize: 13 }}
+                    >
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}
                 </TableRow>
@@ -395,40 +482,54 @@ export function DataTable({ data = [], onAddTransaction, onDeleteTransactions }:
             ) : (
               <TableRow>
                 <TableCell
-                  colSpan={columns?.length ?? 1}
-                  className="h-24 text-center"
+                  colSpan={columns.length}
+                  style={{
+                    textAlign: "center", padding: "56px 0",
+                    color: "rgba(240,238,230,0.3)", fontSize: 13,
+                    letterSpacing: "0.06em",
+                  }}
                 >
-                  Nenhuma transação encontrada.
+                  <div style={{ marginBottom: 8, fontSize: 28, opacity: 0.3 }}>◎</div>
+                  NENHUMA TRANSAÇÃO ENCONTRADA
                 </TableCell>
               </TableRow>
             )}
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
+
+      {/* Footer */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        paddingTop: 16, flexWrap: "wrap", gap: 12,
+      }}>
+        <span style={{ fontSize: 12, color: "rgba(240,238,230,0.35)", letterSpacing: "0.06em" }}>
           {table.getFilteredSelectedRowModel().rows.length} de{" "}
-          {table.getFilteredRowModel().rows.length} transações selecionadas.
-        </div>
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronsLeft/>
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronsRight/>
-          </Button>
+          {table.getFilteredRowModel().rows.length} transações selecionadas
+        </span>
+        <div style={{ display: "flex", gap: 8 }}>
+          {[
+            { label: <ChevronsLeft size={14} />, action: () => table.previousPage(), disabled: !table.getCanPreviousPage() },
+            { label: <ChevronsRight size={14} />, action: () => table.nextPage(), disabled: !table.getCanNextPage() },
+          ].map((btn, i) => (
+            <button
+              key={i}
+              onClick={btn.action}
+              disabled={btn.disabled}
+              style={{
+                background: "transparent",
+                border: "1px solid rgba(255,255,255,0.1)",
+                borderRadius: 4, color: btn.disabled ? "rgba(240,238,230,0.2)" : "rgba(240,238,230,0.6)",
+                width: 34, height: 34, cursor: btn.disabled ? "not-allowed" : "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+                transition: "all 0.15s",
+              }}
+            >
+              {btn.label}
+            </button>
+          ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

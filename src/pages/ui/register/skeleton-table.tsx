@@ -1,46 +1,21 @@
-// IMPORTS
-
 import * as React from "react"
 import {
-  ColumnDef,
-  ColumnFiltersState,
-  SortingState,
-  VisibilityState,
-  flexRender,
-  getCoreRowModel,
-  getFilteredRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
+  ColumnDef, ColumnFiltersState, SortingState, VisibilityState,
+  flexRender, getCoreRowModel, getFilteredRowModel,
+  getPaginationRowModel, getSortedRowModel, useReactTable,
 } from "@tanstack/react-table"
 import { ChevronDown, ChevronsLeft, ChevronsRight } from "lucide-react"
- 
 import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuCheckboxItem,
+  DropdownMenuContent, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { toast } from "sonner";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
+import { toast } from "sonner"
 import { DialogForm } from "./create-transaction"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
-
-// ARRAYS/OBJECTS OU REQUISIÇÕES
- 
-
-// TYPES
+import {
+  Select, SelectContent, SelectGroup, SelectItem,
+  SelectLabel, SelectTrigger, SelectValue,
+} from "@/components/ui/select"
 
 export type Transações = {
   id: string
@@ -53,68 +28,55 @@ export type Transações = {
   email: string
 }
 
-// COLUNAS DA TABELA
- 
+// Skeleton shimmer cell
+function SkeletonCell({ width = 120 }: { width?: number }) {
+  return (
+    <div style={{
+      height: 14, width, borderRadius: 3,
+      background: "linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%)",
+      backgroundSize: "200% 100%",
+      animation: "shimmer 1.5s infinite",
+    }} />
+  );
+}
+
 // eslint-disable-next-line react-refresh/only-export-components
 export const columns: ColumnDef<Transações>[] = [
-  {
-    id: "select",
-    header: () => <Skeleton className="h-6 w-[120px]" />,
-    cell: () => <Skeleton className="h-6 w-[120px]" />,
-  },
-  {
-    accessorKey: "nome",
-    header: () => <Skeleton className="h-6 w-[120px]" />,
-    cell: () => <Skeleton className="h-6 w-[120px]" />,
-  },
-  {
-    accessorKey: "email",
-    header: () => <Skeleton className="h-6 w-[120px]" />,
-    cell: () => <Skeleton className="h-6 w-[120px]" />,
-  },
-  {
-    accessorKey: "crn",
-    header: () => <Skeleton className="h-6 w-[120px]" />,
-    cell: () => <Skeleton className="h-6 w-[120px]" />,
-  },
-  {
-    accessorKey: "telefone",
-    header: () => <Skeleton className="h-6 w-[120px]" />,
-    cell: () => <Skeleton className="h-6 w-[120px]" />,
-  },
-  {
-    accessorKey: "Criação/Atualização",
-    header: () => <Skeleton className="h-6 w-[120px]" />,
-    cell: () => <Skeleton className="h-6 w-[120px]" />
-  },
-  {
-    id: "actions",
-    header: () => <Skeleton className="h-6 w-[120px]" />,
-    cell: () => <Skeleton className="h-6 w-[120px]" />,
-  },
+  { id: "select", header: () => <SkeletonCell width={20} />, cell: () => <SkeletonCell width={20} /> },
+  { accessorKey: "nome", header: () => <SkeletonCell width={60} />, cell: () => <SkeletonCell width={140} /> },
+  { accessorKey: "email", header: () => <SkeletonCell width={60} />, cell: () => <SkeletonCell width={180} /> },
+  { accessorKey: "crn", header: () => <SkeletonCell width={60} />, cell: () => <SkeletonCell width={100} /> },
+  { accessorKey: "telefone", header: () => <SkeletonCell width={60} />, cell: () => <SkeletonCell width={100} /> },
+  { accessorKey: "Criação/Atualização", header: () => <SkeletonCell width={80} />, cell: () => <SkeletonCell width={140} /> },
+  { id: "actions", header: () => <SkeletonCell width={40} />, cell: () => <SkeletonCell width={32} /> },
 ]
 
-// TABELA
+const SKELETON_ROWS = 6;
+
+const inputStyle: React.CSSProperties = {
+  background: "rgba(255,255,255,0.04)",
+  border: "1px solid rgba(255,255,255,0.1)",
+  borderRadius: 4, color: "rgba(240,238,230,0.3)",
+  fontFamily: "'DM Mono', monospace", fontSize: 13,
+  padding: "8px 14px", outline: "none",
+  cursor: "not-allowed",
+};
 
 export function TableSkeleton({
   data = [],
-  onAddTransaction
+  onAddTransaction,
 }: {
-  data?: Transações[],
-  onAddTransaction: (t: { name: string; amount: number; type: boolean; method: "credit" | "debit" | "pix" | "money"; }) => void,
-  onDeleteTransactions?: (ids: string[]) => void
+  data?: Transações[];
+  onAddTransaction: (t: { name: string; amount: number; type: boolean; method: "credit" | "debit" | "pix" | "money" }) => void;
+  onDeleteTransactions?: (ids: string[]) => void;
 }) {
-  const [sorting, setSorting] = React.useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
-  )
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [rowSelection, setRowSelection] = React.useState({})
- 
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
+  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+
   const table = useReactTable({
-    data,
-    columns,
+    data, columns,
     onSortingChange: setSorting,
     onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
@@ -123,31 +85,33 @@ export function TableSkeleton({
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
-    state: {
-      sorting,
-      columnFilters,
-      columnVisibility,
-      rowSelection,
-    },
-  })
+    state: { sorting, columnFilters, columnVisibility, rowSelection },
+  });
+
   return (
+    <div style={{ width: "100%", fontFamily: "'DM Mono', monospace" }}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@300;400;500;700&display=swap');
+        @keyframes shimmer {
+          0% { background-position: -200% 0; }
+          100% { background-position: 200% 0; }
+        }
+        @keyframes spin {
+          to { transform: rotate(360deg); }
+        }
+      `}</style>
 
-    //FILTROS
-
-    <div className="w-full">
-      <div className="flex items-center py-4 gap-3">
-        <Input
+      {/* Toolbar (disabled state) */}
+      <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 16, flexWrap: "wrap" }}>
+        <input
+          disabled
           placeholder="Filtrar transações..."
-          value={(table.getColumn("name")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("name")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm"
+          style={{ ...inputStyle, width: 220 }}
         />
 
-        <Select>
-          <SelectTrigger className="w-[180px]">
-            <SelectValue placeholder="Filtrar método..." className="text-gray-600" />
+        <Select disabled>
+          <SelectTrigger style={{ ...inputStyle, width: 160 }}>
+            <SelectValue placeholder="Método..." />
           </SelectTrigger>
           <SelectContent>
             <SelectGroup>
@@ -160,127 +124,133 @@ export function TableSkeleton({
           </SelectContent>
         </Select>
 
-      <Button 
-      variant="default"
-      onClick={() => {
-      table.getColumn("nome")?.setFilterValue(""); // Limpa o filtro de nomes
-      table.getColumn("email")?.setFilterValue(""); // Limpa o filtro de emails
-      table.getColumn("crn")?.setFilterValue(""); // Limpa o filtro de crn 
-      toast.success("Filtros foram limpos") // Exibe mensagem de sucesso
-      }}
-      >
-          Limpar filtros
-      </Button>
+        <button
+          disabled
+          onClick={() => toast.success("Filtros limpos")}
+          style={{
+            background: "transparent", border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: 4, color: "rgba(240,238,230,0.2)", padding: "8px 16px",
+            fontSize: 12, letterSpacing: "0.08em", cursor: "not-allowed",
+            fontFamily: "'DM Mono', monospace",
+          }}
+        >
+          LIMPAR
+        </button>
 
-      <DialogForm onAddTransaction={onAddTransaction} />
-        
+        <DialogForm onAddTransaction={onAddTransaction} />
 
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Colunas <ChevronDown />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => {
-                return (
-                  <DropdownMenuCheckboxItem
-                    key={column.id}
-                    className="capitalize"
-                    checked={column.getIsVisible()}
-                    onCheckedChange={(value) =>
-                      column.toggleVisibility(!!value)
-                    }
-                  >
-                    {column.id}
-                  </DropdownMenuCheckboxItem>
-                )
-              })}
-          </DropdownMenuContent>
-        </DropdownMenu>
+        <div style={{ marginLeft: "auto" }}>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button style={{
+                display: "inline-flex", alignItems: "center", gap: 6,
+                background: "transparent", border: "1px solid rgba(255,255,255,0.07)",
+                borderRadius: 4, color: "rgba(240,238,230,0.2)", padding: "8px 14px",
+                fontSize: 12, letterSpacing: "0.08em", cursor: "pointer",
+                fontFamily: "'DM Mono', monospace",
+              }}>
+                COLUNAS <ChevronDown size={12} />
+              </button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end" style={{
+              background: "#0e0e1a", border: "1px solid rgba(255,255,255,0.1)",
+              borderRadius: 6, color: "#F0EEE6", fontFamily: "'DM Mono', monospace",
+            }}>
+              {table.getAllColumns().filter(c => c.getCanHide()).map(column => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  checked={column.getIsVisible()}
+                  onCheckedChange={v => column.toggleVisibility(!!v)}
+                  style={{ fontSize: 11, letterSpacing: "0.06em", textTransform: "uppercase" }}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
+              ))}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
-      <div className="rounded-md border">
-        <Table className="w-[1300px] rounded-md p-3">
+
+      {/* Table skeleton */}
+      <div style={{
+        border: "1px solid rgba(255,255,255,0.07)",
+        borderRadius: 8, overflow: "hidden",
+        background: "rgba(255,255,255,0.015)",
+      }}>
+        <Table>
           <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} className="ml-3">
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
+            {table.getHeaderGroups().map(hg => (
+              <TableRow key={hg.id} style={{ borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
+                {hg.headers.map(header => (
+                  <TableHead key={header.id} style={{
+                    background: "rgba(255,255,255,0.02)", padding: "14px 16px",
+                    borderBottom: "1px solid rgba(255,255,255,0.06)",
+                  }}>
+                    {header.isPlaceholder ? null : flexRender(header.column.columnDef.header, header.getContext())}
+                  </TableHead>
+                ))}
               </TableRow>
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                    <svg className="animate-spin h-8 w-8 text-gray-400 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                    </svg>
-                    <span className="block mt-2 text-muted-foreground">Carregando...</span>
-                </TableCell>
+            {/* Fake skeleton rows */}
+            {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
+              <TableRow key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", opacity: 1 - i * 0.12 }}>
+                {columns.map((col, j) => (
+                  <TableCell key={j} style={{ padding: "16px 16px" }}>
+                    <SkeletonCell width={[20, 60, 140, 120, 80, 120, 32][j] ?? 100} />
+                  </TableCell>
+                ))}
               </TableRow>
-            )}
+            ))}
+
+            {/* Loading indicator */}
+            <TableRow>
+              <TableCell colSpan={columns.length} style={{ padding: "24px 0", textAlign: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+                  <svg
+                    width="16" height="16" viewBox="0 0 24 24"
+                    style={{ animation: "spin 0.9s linear infinite", flexShrink: 0 }}
+                  >
+                    <circle cx="12" cy="12" r="10" stroke="rgba(0,255,178,0.2)" strokeWidth="3" fill="none" />
+                    <path d="M4 12a8 8 0 018-8" stroke="#00FFB2" strokeWidth="3" strokeLinecap="round" fill="none" />
+                  </svg>
+                  <span style={{ fontSize: 11, letterSpacing: "0.12em", color: "rgba(240,238,230,0.3)" }}>
+                    CARREGANDO TRANSAÇÕES...
+                  </span>
+                </div>
+              </TableCell>
+            </TableRow>
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} de {" "}
-          {table.getFilteredRowModel().rows.length} transações(s) selecionado(s)
-        </div>
 
-        <div className="space-x-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.previousPage()}
-            disabled={!table.getCanPreviousPage()}
-          >
-            <ChevronsLeft/>
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => table.nextPage()}
-            disabled={!table.getCanNextPage()}
-          >
-            <ChevronsRight/>
-          </Button>
+      {/* Footer */}
+      <div style={{
+        display: "flex", alignItems: "center", justifyContent: "space-between",
+        paddingTop: 16,
+      }}>
+        <span style={{ fontSize: 12, color: "rgba(240,238,230,0.2)", letterSpacing: "0.06em" }}>
+          — de — transações selecionadas
+        </span>
+        <div style={{ display: "flex", gap: 8 }}>
+          {[ChevronsLeft, ChevronsRight].map((Icon, i) => (
+            <button
+              key={i}
+              disabled
+              style={{
+                background: "transparent",
+                border: "1px solid rgba(255,255,255,0.07)",
+                borderRadius: 4, color: "rgba(240,238,230,0.15)",
+                width: 34, height: 34, cursor: "not-allowed",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              <Icon size={14} />
+            </button>
+          ))}
         </div>
       </div>
     </div>
-  )
+  );
 }

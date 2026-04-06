@@ -1,95 +1,91 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { TrendingDown } from "lucide-react";
 import { getTransactions } from "@/db/transactions-local";
 import React from "react";
+import { MetricCardSkeleton } from "./metric-card-skeleton";
 
 export function MonthCanceledOrdersAmountCard() {
-    // Soma todas as transações de saída (type === false) do mês atual
-    const [amount, setAmount] = React.useState(0);
-    const [diffFromLastMonth, setDiffFromLastMonth] = React.useState(0);
+  const [amount, setAmount] = React.useState(0);
+  const [diffFromLastMonth, setDiffFromLastMonth] = React.useState(0);
+  const [loading, setLoading] = React.useState(true);
 
-    React.useEffect(() => {
-        const transactions = getTransactions();
-        const today = new Date();
-        const currentMonth = today.getMonth();
-        const currentYear = today.getFullYear();
+  React.useEffect(() => {
+    const transactions = getTransactions();
+    const today = new Date();
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
 
-        // Soma saídas do mês atual
-        const sumCurrentMonth = transactions
-            .filter(t => {
-                if (!t.createdAt || t.type !== false) return false;
-                const date = new Date(t.createdAt);
-                return (
-                    date.getMonth() === currentMonth &&
-                    date.getFullYear() === currentYear
-                );
-            })
-            .reduce((acc, t) => acc + (t.amount || 0), 0);
+    const sumCurrentMonth = transactions
+      .filter(t => {
+        if (!t.createdAt || t.type !== false) return false;
+        const d = new Date(t.createdAt);
+        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+      })
+      .reduce((acc, t) => acc + (t.amount || 0), 0);
 
-        // Soma saídas do mês passado
-        const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
-        const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+    const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+    const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
 
-        const sumLastMonth = transactions
-            .filter(t => {
-                if (!t.createdAt || t.type !== false) return false;
-                const date = new Date(t.createdAt);
-                return (
-                    date.getMonth() === lastMonth &&
-                    date.getFullYear() === lastMonthYear
-                );
-            })
-            .reduce((acc, t) => acc + (t.amount || 0), 0);
+    const sumLastMonth = transactions
+      .filter(t => {
+        if (!t.createdAt || t.type !== false) return false;
+        const d = new Date(t.createdAt);
+        return d.getMonth() === lastMonth && d.getFullYear() === lastMonthYear;
+      })
+      .reduce((acc, t) => acc + (t.amount || 0), 0);
 
-        setAmount(Math.abs(sumCurrentMonth)); // Valor sempre positivo
+    setAmount(Math.abs(sumCurrentMonth));
+    let diff = 0;
+    if (sumLastMonth > 0) diff = Math.round(((sumCurrentMonth - sumLastMonth) / sumLastMonth) * 100);
+    else if (sumCurrentMonth > 0) diff = 100;
+    setDiffFromLastMonth(diff);
+    setLoading(false);
+  }, []);
 
-        // Calcula a diferença percentual em relação ao mês passado
-        let diff = 0;
-        if (sumLastMonth > 0) {
-            diff = Math.round(((sumCurrentMonth - sumLastMonth) / sumLastMonth) * 100);
-        } else if (sumCurrentMonth > 0) {
-            diff = 100;
-        }
-        setDiffFromLastMonth(diff);
-    }, []);
+  // For expenses: lower is better (green), higher is bad (red)
+  const diffColor = diffFromLastMonth < 0 ? '#00FFB2' : diffFromLastMonth === 0 ? '#00C9FF' : '#FF6B6B';
 
-    return (
-        <Card>
-         <CardHeader className="flex-row items-center justify-between space-y-0 pb-2">
-             <CardTitle className="text-base font-semibold">Despesas (mês)</CardTitle>
-             <TrendingDown className="h-4 w-4 text-muted-foreground" />
-         </CardHeader>
-         <CardContent className="space-y-1">
-          <>
-            <span className="text-3xl font-bold tracking-tight">
-              {amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+  return (
+    <div
+      style={{
+        background: 'rgba(255,255,255,0.025)',
+        border: '1px solid rgba(255,255,255,0.07)',
+        borderRadius: 8, padding: '24px 28px',
+        fontFamily: "'DM Mono', 'Courier New', monospace",
+        color: '#F0EEE6', transition: 'border-color 0.2s',
+      }}
+      onMouseEnter={e => (e.currentTarget.style.borderColor = 'rgba(255,107,107,0.2)')}
+      onMouseLeave={e => (e.currentTarget.style.borderColor = 'rgba(255,255,255,0.07)')}
+    >
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <span style={{ fontSize: 11, letterSpacing: '0.12em', color: 'rgba(240,238,230,0.4)' }}>
+          DESPESAS DO MÊS
+        </span>
+        <div style={{
+          width: 28, height: 28, borderRadius: 4,
+          background: 'rgba(255,107,107,0.08)', border: '1px solid rgba(255,107,107,0.15)',
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+        }}>
+          <TrendingDown size={13} color="#FF6B6B" />
+        </div>
+      </div>
+
+      {loading ? <MetricCardSkeleton /> : (
+        <>
+          <div style={{
+            fontSize: 28, fontWeight: 800,
+            fontFamily: "'DM Serif Display', Georgia, serif",
+            color: '#FF6B6B', letterSpacing: '-0.01em', marginBottom: 8,
+          }}>
+            {amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
+          </div>
+          <p style={{ fontSize: 11, color: 'rgba(240,238,230,0.35)', letterSpacing: '0.04em' }}>
+            <span style={{ color: diffColor, fontWeight: 600 }}>
+              {diffFromLastMonth > 0 ? '+' : ''}{diffFromLastMonth}%
             </span>
-            <p className="text-xs text-muted-foreground">
-              {diffFromLastMonth < 0 ? (
-                <>
-                  <span className="text-emerald-500 dark:text-emerald-400">
-                    {diffFromLastMonth}%
-                  </span>{' '}
-                  em relação ao mês passado
-                </>
-              ) : diffFromLastMonth === 0 ? (
-                <>
-                  <span className="text-blue-400">
-                    {diffFromLastMonth}%
-                  </span>{' '}
-                  em relação ao mês passado
-                </>
-              ) : (
-                <>
-                  <span className="text-rose-500 dark:text-rose-400">
-                    +{diffFromLastMonth}%
-                  </span>{' '} 
-                  em relação ao mês passado
-                </>
-              )}
-            </p>
-          </>
-         </CardContent>
-        </Card>
-    )
+            {' '}em relação ao mês passado
+          </p>
+        </>
+      )}
+    </div>
+  );
 }

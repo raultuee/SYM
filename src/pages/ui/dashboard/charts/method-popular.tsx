@@ -1,159 +1,180 @@
 "use client"
 
 import * as React from "react"
-import { TrendingUp } from "lucide-react"
-import { Pie, PieChart, Cell, Label } from "recharts"
-
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card"
-import {
-  ChartConfig,
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-} from "@/components/ui/chart"
+import { Pie, PieChart, Cell, Tooltip, ResponsiveContainer } from "recharts"
 import { getTransactions } from "@/db/transactions-local"
 
-const chartConfig = {
-  payments: {
-    label: "Pagamentos",
-  },
-  debit: {
-    label: "Débito",
-    color: "hsl(var(--chart-1))",
-  },
-  credit: {
-    label: "Crédito",
-    color: "hsl(var(--chart-2))",
-  },
-  pix: {
-    label: "PIX",
-    color: "hsl(var(--chart-3))",
-  },
-  money: {
-    label: "Dinheiro",
-    color: "hsl(var(--chart-4))",
-  },
-} satisfies ChartConfig
+const METHOD_CONFIG: Record<string, { label: string; color: string; dim: string }> = {
+  debit:  { label: 'Débito',    color: '#00C9FF', dim: 'rgba(0,201,255,0.15)' },
+  credit: { label: 'Crédito',   color: '#7B61FF', dim: 'rgba(123,97,255,0.15)' },
+  pix:    { label: 'PIX',       color: '#00FFB2', dim: 'rgba(0,255,178,0.15)' },
+  money:  { label: 'Dinheiro',  color: '#FFD600', dim: 'rgba(255,214,0,0.15)' },
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function CustomTooltip({ active, payload }: any) {
+  if (!active || !payload?.length) return null
+  const d = payload[0]
+  const cfg = METHOD_CONFIG[d.name] ?? { label: d.name, color: '#F0EEE6' }
+  return (
+    <div style={{
+      background: '#0e0e1a', border: '1px solid rgba(255,255,255,0.1)',
+      borderRadius: 6, padding: '10px 14px',
+      fontFamily: "'DM Mono', monospace", fontSize: 12,
+    }}>
+      <span style={{ color: cfg.color, fontWeight: 600, letterSpacing: '0.08em' }}>
+        {cfg.label}
+      </span>
+      <span style={{ color: 'rgba(240,238,230,0.45)', marginLeft: 10 }}>
+        {d.value} uso{d.value !== 1 ? 's' : ''}
+      </span>
+    </div>
+  )
+}
 
 export function PopularProductsChart() {
-  // Conta os métodos de pagamento mais usados no banco de dados
-  const [chartData, setChartData] = React.useState<{ method: string; value: number }[]>([]);
+  const [chartData, setChartData] = React.useState<{ method: string; value: number }[]>([])
 
   React.useEffect(() => {
-    const transactions = getTransactions();
-    const counts: Record<string, number> = {};
+    const transactions = getTransactions()
+    const counts: Record<string, number> = {}
     for (const t of transactions) {
-      if (t.method) {
-        counts[t.method] = (counts[t.method] || 0) + 1;
-      }
+      if (t.method) counts[t.method] = (counts[t.method] || 0) + 1
     }
-    const data = Object.entries(counts).map(([method, value]) => ({ method, value }));
-    setChartData(data);
-  }, []);
+    setChartData(Object.entries(counts).map(([method, value]) => ({ method, value })))
+  }, [])
 
-  const total = React.useMemo(() => {
-    return chartData.reduce((acc, curr) => acc + curr.value, 0)
-  }, [chartData])
+  const total = React.useMemo(() => chartData.reduce((acc, c) => acc + c.value, 0), [chartData])
+
+  const topMethod = chartData.length > 0
+    ? chartData.reduce((max, c) => c.value > max.value ? c : max, chartData[0])
+    : null
 
   return (
-    <Card className="flex flex-col w-[374px] ml-auto">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Métodos de Pagamento</CardTitle>
-        <CardDescription>Este mês</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer
-          config={chartConfig}
-          className="mx-auto aspect-square max-h-[250px]"
-        >
-          <PieChart>
-            <ChartTooltip
-              cursor={false}
-              content={<ChartTooltipContent hideLabel />}
-            />
-            <Pie
-              data={chartData}
-              dataKey="value"
-              nameKey="method"
-              innerRadius={60}
-              strokeWidth={5}
-            >
-              {chartData.map((entry) => (
-                <Cell
-                  key={entry.method}
-                  fill={
-                    ((): string | undefined => {
-                      const config = chartConfig[entry.method as keyof typeof chartConfig];
-                      return "color" in config ? config.color : undefined;
-                    })()
-                  }
-                />
-              ))}
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
-                        >
-                          {total.toLocaleString()}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                        >
-                          Pagamentos
-                        </tspan>
-                      </text>
-                    )
-                  }
-                }}
-              />
-            </Pie>
-          </PieChart>
-        </ChartContainer>
-      </CardContent>
-      <CardFooter className="flex-col gap-2 text-sm">
-        <div className="flex items-center gap-2 font-medium leading-none">
-          Método mais usado:&nbsp;
-          {chartData.length > 0 ? (
-            <>
-              {
-                chartConfig[
-                  chartData.reduce((max, curr) =>
-                    curr.value > (chartData.find(e => e.method === max)?.value ?? 0)
-                      ? curr.method
-                      : max,
-                    chartData[0].method
-                  ) as keyof typeof chartConfig
-                ]?.label
-              }
-            </>
-          ) : (
-            "Nenhum"
-          )}
-          <TrendingUp className="h-4 w-4" />
+    <div style={{
+      width: 340,
+      background: 'rgba(255,255,255,0.025)',
+      border: '1px solid rgba(255,255,255,0.07)',
+      borderRadius: 8,
+      fontFamily: "'DM Mono', 'Courier New', monospace",
+      color: '#F0EEE6',
+      overflow: 'hidden',
+      flexShrink: 0,
+    }}>
+      {/* Header */}
+      <div style={{ padding: '20px 24px', borderBottom: '1px solid rgba(255,255,255,0.07)' }}>
+        <div style={{ fontSize: 11, letterSpacing: '0.12em', color: 'rgba(240,238,230,0.4)', marginBottom: 4 }}>
+          MÉTODOS DE PAGAMENTO
         </div>
-        <div className="leading-none text-muted-foreground text-center">
-          Métodos de pagamento mais populares
+        <div style={{
+          fontSize: 16, fontWeight: 700,
+          fontFamily: "'DM Serif Display', Georgia, serif",
+        }}>
+          Distribuição do mês
         </div>
-      </CardFooter>
-    </Card>
+      </div>
+
+      {/* Chart */}
+      <div style={{ padding: '16px 0 8px', position: 'relative' }}>
+        {chartData.length === 0 ? (
+          <div style={{
+            height: 200, display: 'flex', alignItems: 'center', justifyContent: 'center',
+            flexDirection: 'column', gap: 10,
+          }}>
+            <div style={{ fontSize: 28, opacity: 0.2 }}>◎</div>
+            <span style={{ fontSize: 11, letterSpacing: '0.1em', color: 'rgba(240,238,230,0.25)' }}>
+              SEM TRANSAÇÕES
+            </span>
+          </div>
+        ) : (
+          <div style={{ position: 'relative' }}>
+            <ResponsiveContainer width="100%" height={200}>
+              <PieChart>
+                <Tooltip content={<CustomTooltip />} />
+                <Pie
+                  data={chartData}
+                  dataKey="value"
+                  nameKey="method"
+                  innerRadius={56}
+                  outerRadius={80}
+                  strokeWidth={0}
+                  paddingAngle={3}
+                >
+                  {chartData.map(entry => (
+                    <Cell
+                      key={entry.method}
+                      fill={METHOD_CONFIG[entry.method]?.color ?? '#F0EEE6'}
+                    />
+                  ))}
+                </Pie>
+              </PieChart>
+            </ResponsiveContainer>
+
+            {/* Center label */}
+            <div style={{
+              position: 'absolute', top: '50%', left: '50%',
+              transform: 'translate(-50%, -50%)',
+              textAlign: 'center', pointerEvents: 'none',
+            }}>
+              <div style={{
+                fontSize: 26, fontWeight: 800,
+                fontFamily: "'DM Serif Display', Georgia, serif",
+                color: '#F0EEE6', lineHeight: 1,
+              }}>
+                {total}
+              </div>
+              <div style={{ fontSize: 9, letterSpacing: '0.1em', color: 'rgba(240,238,230,0.35)', marginTop: 4 }}>
+                PAGAMENTOS
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Legend */}
+      <div style={{ padding: '8px 24px 20px', display: 'flex', flexDirection: 'column', gap: 8 }}>
+        {Object.entries(METHOD_CONFIG).map(([key, cfg]) => {
+          const found = chartData.find(d => d.method === key)
+          const count = found?.value ?? 0
+          const pct = total > 0 ? Math.round((count / total) * 100) : 0
+          return (
+            <div key={key} style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+              <span style={{
+                width: 8, height: 8, borderRadius: '50%',
+                background: cfg.color, flexShrink: 0,
+              }} />
+              <span style={{ flex: 1, fontSize: 11, color: 'rgba(240,238,230,0.55)', letterSpacing: '0.06em' }}>
+                {cfg.label.toUpperCase()}
+              </span>
+              <span style={{ fontSize: 11, color: cfg.color, fontWeight: 600 }}>
+                {pct}%
+              </span>
+            </div>
+          )
+        })}
+      </div>
+
+      {/* Footer */}
+      {topMethod && (
+        <div style={{
+          borderTop: '1px solid rgba(255,255,255,0.07)',
+          padding: '14px 24px',
+          display: 'flex', alignItems: 'center', gap: 8,
+        }}>
+          <span style={{ fontSize: 10, letterSpacing: '0.1em', color: 'rgba(240,238,230,0.3)' }}>
+            MAIS USADO:
+          </span>
+          <span style={{
+            fontSize: 11, fontWeight: 700, letterSpacing: '0.08em',
+            color: METHOD_CONFIG[topMethod.method]?.color ?? '#F0EEE6',
+          }}>
+            {METHOD_CONFIG[topMethod.method]?.label ?? topMethod.method}
+          </span>
+          <span style={{ fontSize: 10, color: 'rgba(240,238,230,0.25)', marginLeft: 'auto' }}>
+            {topMethod.value} uso{topMethod.value !== 1 ? 's' : ''}
+          </span>
+        </div>
+      )}
+    </div>
   )
 }
