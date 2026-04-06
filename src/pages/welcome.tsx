@@ -165,7 +165,7 @@ export default function WelcomePage() {
           >
             NÚMEROS
           </a>
-          <Link to="/login">
+          <Link to="/register">
             <button
               style={{
                 background: "transparent",
