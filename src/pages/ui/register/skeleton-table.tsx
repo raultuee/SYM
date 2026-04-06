@@ -196,7 +196,7 @@ export function TableSkeleton({
             {/* Fake skeleton rows */}
             {Array.from({ length: SKELETON_ROWS }).map((_, i) => (
               <TableRow key={i} style={{ borderBottom: "1px solid rgba(255,255,255,0.04)", opacity: 1 - i * 0.12 }}>
-                {columns.map((col, j) => (
+                {columns.map((_col, j) => (
                   <TableCell key={j} style={{ padding: "16px 16px" }}>
                     <SkeletonCell width={[20, 60, 140, 120, 80, 120, 32][j] ?? 100} />
                   </TableCell>
