@@ -3,7 +3,6 @@ import { AccountMenu } from './ui/account-menu'
 import { NavLink } from './ui/nav-link'
 import { ThemeToggle } from './ui/toggle-theme'
 import { Notification } from './ui/notification'
-import { toast } from 'sonner'
 
 export function Header() {
   return (
@@ -55,7 +54,7 @@ export function Header() {
             <ArrowLeftRight size={13} />
             Transações
           </NavLink>
-          <NavLink onClick={() => toast.info("Em breve!")} to={''}>
+          <NavLink to={''}>
             <Paperclip size={13} />
             Guia
           </NavLink>
